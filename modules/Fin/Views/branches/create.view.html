@@ -1,0 +1,68 @@
+@painel_header()
+
+{!form_open('Adicionar Filial','branches')!}
+  {{csrf_field()}}
+  <div class="np-row">
+    <div class="crow">
+  <div class="np-row">
+    <div class="np-col local-msg"></div>
+  </div>
+  <div class="np-row">
+    <div class="np-col m6 np-padding-small">
+	  <label><i class="icon">flag</i>#branche_code#</label>
+      <input name="branche_code" type="text"  class="np-input np-border-green">
+    </div>
+    <div class="np-col m6 np-padding-small">
+	  <label><i class="icon">business</i>#branche_name#</label>
+      <input type="text" name="branche_name" class="np-input np-border-red" required>
+    </div>
+
+	<div class="np-col m6 np-padding-small">
+	  <label><i class="icon">link</i>#branche_site#</label>
+      <input type="text" name="company_website" class="np-input">
+    </div>
+	
+	<div class="np-col m6 np-padding-small">
+	  <label><i class="icon">phone</i>#phone#</label>
+      <input name="branche_phone" type="text" class="np-input">
+    </div>
+
+	<div class="np-col m6 np-padding-small">
+	  <label><i class="icon">flag</i>CEP</label>
+      <input name="address_zip_code" type="text" class="np-input">
+    </div>
+	
+	<div class="np-col m3 np-padding-small">
+	  <label><i class="icon">list</i>Número</label>
+      <input name="address_number" type="text" class="np-input">
+    </div>
+	
+	<div class="np-col m3 np-padding-small">
+	  <label><i class="icon">list</i>Estado</label>
+      <input name="address_state" type="text" class="np-input">
+    </div>
+	
+	<div class="np-col m6 np-padding-small">
+	  <label><i class="icon">list</i>Logradouro</label>
+      <input name="address_public_place" type="text" class="np-input">
+    </div>
+	
+	<div class="np-col m6 np-padding-small">
+	  <label><i class="icon">list</i>Bairro</label>
+      <input name="address_neighborhood" type="text" class="np-input">
+    </div>
+
+	<div class="np-col m6 np-padding-small">
+	  <label><i class="icon">list</i>Cidade</label>
+      <input name="address_city" type="text" class="np-input">
+    </div>
+
+	<div class="np-col m6 np-padding-small">
+	  <label><i class="icon">list</i>Complemento</label>
+      <input name="address_complement" type="text" class="np-input">
+    </div>
+</div>
+  
+{!form_close()!}
+
+@painel_footer()

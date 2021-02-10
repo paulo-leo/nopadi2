@@ -1,0 +1,61 @@
+@include("@Painel/Views/header")
+
+
+@if($find->id == user_id())
+
+<div class="np-modal np-show">
+  <div class="np-modal-content np-round np-card" style="max-width:500px">
+    <div class="np-container np-center np-padding np-animate-zoom">
+	  <i class="material-icons np-xxlarge">screen_lock_landscape</i></br>
+      <p>Desculpe, mas por questão de segurança você não pode editar a si mesmo por esta tela.</p>
+	  <a onclick="window.history.go(-1);" class="np-btn np-small np-red np-round">Voltar</a>
+	  <a href="{{url('profile')}}" class="np-btn np-small np-blue np-round">Editar meu perfil</a>
+    </div>
+  </div>
+</div>
+
+@endif
+
+{!form_open(':user.edit','users','put')!}
+
+<input type="hidden" name="id" value="{{$find->id}}">
+{{csrf_field()}}
+       
+     <div class="np-col m12">
+      <div class="np-col m6 np-padding-small">
+	  
+      <label>#email#</label>
+      <input required name="email" value="{{$find->email}}" type="email" class="np-cell  np-input" placeholder="#email#">
+    </div>
+	
+	
+    <div class="np-col m6 np-padding-small">
+      <label>#full.name#</label>
+      <input required name="name" value="{{$find->name}}" type="text" class="np-input" placeholder="#full.name#">
+    </div>
+    <div class="np-col m4 np-padding-small">
+	  <label>#situation#</label>
+      <select name="status" class="np-input">
+	     {!$statusOptions!}
+	   </select>
+    </div>
+  
+    <div class="np-col m4 np-padding-small">
+	  <label>#lang#</label>
+      <select name="lang" class="np-input">
+	     {!$langOptions!}
+	   </select>
+     </div>
+  
+    <div class="np-col m4 np-padding-small">
+	  <label>#role#</label>
+      <select name="role" class="np-input">
+	     {!$roleOptions!}
+	  </select>
+       </div>
+    </div>
+
+    <br><br>
+{!form_close()!}
+
+@include("@Painel/Views/footer")

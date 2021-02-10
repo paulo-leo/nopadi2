@@ -1,0 +1,43 @@
+@include('dashboard/header')
+<script src="{{asset('js/jquery.form.min.js')}}"></script>
+<div class="container">
+    <form id="form" enctype="multipart/form-data" action="{{url('dashboard/images')}}" method="POST">
+	{{csrf_field()}}
+	<input type="hidden" name="user_id" value="{{user_id()}}">
+	<p>Nome ou descrição da imagem
+	<input type="text"name="name" class="input">
+	</p>
+	<p>Pasta da imagem
+	<select name="folder_id" class="input">
+	     <option value="0">Nenhuma</option>
+		 {!$folders!}
+	</select></p>
+	
+     Enviar esse arquivo: <input name="userfile" type="file" class="input margin-bottom" />
+	 <div class="msg-loading col m12"></div>
+    <input type="submit" class="button green small" value="Enviar imagem" />
+    </form>
+</div>
+<script>
+$(function(){
+// attach handler to form's submit event 
+$('#form').submit(function() { 
+    // prepare Options Object 
+    var options = { 
+        type:'post',
+        url:  '{{url("dashboard/images")}}', 
+        beforeSend : function(){
+          $('.msg-loading').html('<div class="progress"><div class="indeterminate"></div></div>');
+     }, success: function(data) { 
+           $('.msg-loading').html(data);
+        } 
+    };
+    // submit the form 
+    $(this).ajaxSubmit(options); 
+    // return false to prevent normal browser submit and page navigation 
+    return false; 
+  });
+});
+</script>
+
+@include("dashboard/footer")

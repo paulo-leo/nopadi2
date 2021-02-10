@@ -1,0 +1,50 @@
+@include("@Painel/Views/header")
+{!form_open(':user.create','users')!}
+{{csrf_field()}}
+<div class="np-col m6 np-padding-small">
+{!form_input(['type'=>'email','label'=>':email','name'=>'email'],true)!}
+</div>
+<div class="np-col m6 np-padding-small">
+{!form_input(['type'=>'text','label'=>':full.name','name'=>'name'],true)!}
+</div>
+
+<div class="np-col m4 np-padding-small">
+{!form_input(['type'=>'password','label'=>':password','name'=>'password'],true)!}
+</div>
+
+<div class="np-col m4 np-padding-small">
+{!form_input(['type'=>'select','label'=>':role','name'=>'role','options'=>$roleOptions],true)!}
+</div>
+
+<div class="np-col m4 np-padding-small">
+{!form_input(['type'=>'select','label'=>':lang','name'=>'lang','options'=>$langOptions],true)!}
+</div>
+
+{!form_close()!}
+
+<script>
+$(function(){ 
+  $('[data-toggle="tooltip"]').tooltip();
+  $("#form").submit(function(){  
+	 
+     var vars = $(this).serialize();
+	 var msg = $(".local-msg");
+	 
+     $.ajax({
+     url : "{{url('users')}}",
+     type : 'post',
+     data : vars,
+     beforeSend : function(){
+          msg.html('<div class="progress"><div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div></div>');
+     },
+	 success : function(data){
+          msg.html(data);
+     }
+
+    }); 
+  
+     return false;
+  });
+});
+</script>
+@include("@Painel/Views/footer")

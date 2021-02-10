@@ -1,0 +1,76 @@
+@include("@Painel/Views/header")
+<div class="np-padding-small" style="min-height:500px">
+<table class="np-table-all np-bordered np-border-0">
+  <thead>
+    <tr>
+      <th><i class="material-icons" style="font-size:21px">account_circle</i>#name#</th>
+      <th><i class="material-icons" style="font-size:21px">email</i>#email#</th>
+      <th colspan="1"><i class="material-icons np-spin" style="font-size:21px">settings</i>#role#</th> 
+	  <th> <a href="{{url('users/create')}}" class="np-small np-card np-padding-small np-round np-border np-border-green np-hover-green np-button">#add#</a> </th>
+    </tr>
+  </thead>
+  <tbody>
+  
+   @if($list->results)
+      @in($list->results)
+	  
+	   @php
+	       $image = strlen($image) > 10 ? '<img style="width:100%" src="'.url($image).'">' : '<img  style="width:100%" src="'.url('img/np-logo.png').'">'; 
+	   @endphp
+	  
+     <tr class="np-item-{{$id}} np-animate-left">
+      <td>
+	     <div class="np-cell-row">
+		 <div class="np-cell" style="width:20%">
+	     <div class="np-circle np-gray np-card np-center" style="width:40px;height:40px">{!$image!} </div>
+		 </div>
+		   <div class="np-cell" style="width:80%;position:relative;top:-8px;padding-left:3px;">
+		       {{$name}}<br>
+	           @if($status == 'pending')
+	           <b class="np-text-orange np-small">{{text(':'.$status)}}</b>
+	           @elseif($status == 'active')
+	           <b class="np-text-green np-small">{{text(':'.$status)}}</b>
+	           @else
+	           <span class="np-text-red np-small">{{text(':'.$status)}}</span>
+	           @endif
+	       </div>
+	    </div>
+	  </td>
+      <td>
+	     {{$email}}
+	  </td>
+      <td>
+	     {{text(':'.$role)}}<br>
+		 <span class="small text-secondary">{{format($created_in,'datetime')}}</span>
+		 </td>
+	  <td>
+	   <a href="{{url("users/{$id}/edit")}}" class="np-link np-hover-text-blue" title="#edit#"><i class="material-icons">edit</i></a>
+	   @if($role != 'admin')
+         {!btn_delete($id,text(':user.delete').' "<b>'.$name.'</b>"?<br>'.$email)!}
+	  @endif
+	   
+	  </td>
+    </tr>
+	
+
+	    @endin
+		
+		  <tr>
+			   <td colspan="4">
+			     <div class="np-right">{!$list->links!}</div>
+			   </td>
+		 </tr>
+		
+		
+		 @else
+            <tr><td colspan="4"><h4 class="text-danger np-animate-right">#user.not.show#</h4></td></tr>
+	 @endif
+	
+  </tbody>
+</table>
+
+</div>
+
+{!script_delete('users')!}
+
+@include("@Painel/Views/footer")

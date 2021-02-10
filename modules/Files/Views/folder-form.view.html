@@ -1,0 +1,47 @@
+@include('dashboard/header')
+<script src="{{asset('js/jquery.form.min.js')}}"></script>
+<div class="container">
+    <form id="form" enctype="multipart/form-data" action="{{url('dashboard/images')}}" method="POST">
+	{{csrf_field()}}
+	<input type="hidden" name="user_id" value="{{user_id()}}">
+	<p>Nome da pasta
+	<input type="text"name="name" class="input">
+	</p>
+	<p>Privacidade da pasta
+	  <select name="privacy" class="input border">
+	    <option value="public">Publico</option>
+		<option value="protected">Protegido</option>
+		<option value="private">Privado</option>
+	  </select>
+	</p>
+	
+	 <div class="msg col m12"></div>
+    <input type="submit" class="button green small" value="Criar pasta" />
+    </form>
+</div>
+<script>
+$(function(){
+$("#form").submit(function(){
+	 
+     var vars = $(this).serialize();
+	 var msg = $(".msg");
+	 
+     $.ajax({
+     url : "{{url('dashboard/folder')}}",
+     type : 'post',
+     data : vars,
+     beforeSend : function(){
+           msg.html('<div class="progress"><div class="indeterminate"></div></div>');
+     },
+	 success : function(data){
+          msg.html(data);
+     }
+
+    }); 
+  
+     return false;
+  });
+});
+</script>
+
+@include("dashboard/footer")

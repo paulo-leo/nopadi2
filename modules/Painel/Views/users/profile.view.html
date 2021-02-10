@@ -1,0 +1,106 @@
+@painel_header()
+
+
+<div class="np-row np-padding" style="min-height:500px">
+
+
+
+<div class="np-col m3 np-padding-small">
+<div class="np-card-2 np-round np-white np-padding np-animate-left" style="min-height:180px">
+    <div class="np-circle np-center np-card np-gray" style="margin:0 auto; width:90px;height:90px">
+	</div>
+	<h4 class="np-center">{{$find->name}}</h4>
+</div>
+</div>
+
+
+<div class="np-col m7 np-padding-small">
+<div class="np-card-2 np-round np-white np-padding np-animate-zoom" style="min-height:180px">
+    <span class="np-large">{{$find->name}}</span><br>
+	<span class="np-medium">#type#: <b>{{text(':'.$find->role)}}</b></span><br>
+	<span class="np-medium">#email#: {{$find->email}}</span><br>
+	<span>#lang#:<select class="np-white np-border-0" disabled>{!$langOptions!}</select></span><br>
+	<span class="np-medium">#registration_date#: {{format($find->created_in,'datetime')}}</span><br><br>
+	<span class="np-medium np-text-red">#token#:{{csrf_token()}}</span>
+</div>
+</div>
+
+
+<div class="np-col m2 np-padding-small">
+<div class="np-card-2 np-round np-white np-padding np-animate-right" style="min-height:180px">
+   <h5 class="np-center">#settings#</h5>
+   <a onclick="document.getElementById('np-modal-profile-edit').style.display='block'" class="np-link np-hover-text-blue np-border-bottom np-col m12">#profile_edit#</a><br>
+    <a onclick="document.getElementById('np-modal-password-edit').style.display='block'" class="np-link np-hover-text-blue np-border-bottom np-col m12">#change_profile_picture#</a><br>
+	 <a onclick="document.getElementById('np-modal-password-edit').style.display='block'" class="np-link np-hover-text-blue np-border-bottom np-col m12">#remove_profile_picture#</a><br>
+   <a onclick="document.getElementById('np-modal-password-edit').style.display='block'" class="np-link np-hover-text-blue">#change_password#</a>
+</div>
+</div>
+
+
+
+
+</div>
+
+
+<!-- Modal Editar informações bádicas do perfil -->
+<div id="np-modal-profile-edit" class="np-modal">
+  <div class="np-modal-content np-round np-animate-top" style="max-width:550px">
+    <div class="np-container np-padding-small">
+      <span onclick="document.getElementById('np-modal-confirm-logout').style.display='none'"
+      class="np-button np-display-topright np-round np-small np-padding-small"><i class="material-icons">close</i></span>
+	  <h3>#profile_edit#</h3>
+      <form class="np-row">
+	     <div class="np-col m12">
+	     <label>#email#</label>
+	     <input type="text" value="{{$find->email}}" disabled class="np-input np-pale-gray np-border-0"></div>
+	     <div class="np-col m12">
+	     <label>#full.name#</label>
+	     <input type="text" name="name" value="{{$find->name}}" class="np-input np-border-0 np-card-2 np-border-left np-border-red"></div>
+		  <div class="np-col m6">
+	     <label>Nome de exibição</label>
+		 <select name="lang" class="np-select np-border-0 np-card np-border-left np-border-red">{!$langOptions!}</select></div>
+		 
+		 <div class="np-col m6">
+	     <label>#lang#</label>
+		 <select name="lang" class="np-select np-border-0 np-card np-border-left np-border-red">{!$langOptions!}</select></div>
+		
+		<a onclick="document.getElementById('np-modal-profile-edit').style.display='none'" class="np-small np-btn np-border np-border-red np-hover-red np-round np-margin-top">#cancel#</a>
+	  <a href="{{url('logout')}}" class="np-small np-btn np-border np-border-green np-hover-green np-round np-margin-top">#save#</a>
+		
+	  </form>
+    </div>
+  </div>
+</div> 
+
+
+<!-- Modal alterar senha -->
+<div id="np-modal-password-edit" class="np-modal">
+  <div class="np-modal-content np-round np-animate-top" style="max-width:450px">
+    <div class="np-container np-padding-small">
+      <span onclick="document.getElementById('np-modal-confirm-logout').style.display='none'"
+      class="np-button np-display-topright np-round np-small np-padding-small"><i class="material-icons">close</i></span>
+	  <h3>#change_password#</h3>
+      <form class="np-row">
+	  <div class="np-col m12">
+	     <label>#current_password#</label>
+	     <input type="password" name="name" class="np-input np-border-0 np-card-2 np-border-left np-border-red"></div>
+	     <div class="np-col m12">
+	     <label>#new_password#</label>
+	     <input type="password" name="name" class="np-input np-border-0 np-card-2 np-border-left np-border-red"></div>
+	     <div class="np-col m12">
+	     <label>#confirm_password#</label>
+	     <input type="password" name="name" class="np-input np-border-0 np-card-2 np-border-left np-border-red"></div>
+		 
+	     
+		
+		<a onclick="document.getElementById('np-modal-password-edit').style.display='none'" class="np-small np-btn np-border np-border-red np-hover-red np-round np-margin-top">#cancel#</a>
+	  <a href="{{url('logout')}}" class="np-small np-btn np-border np-border-green np-hover-green np-round np-margin-top">#save#</a>
+		
+	  </form>
+    </div>
+  </div>
+</div> 
+
+
+ 
+@painel_footer()

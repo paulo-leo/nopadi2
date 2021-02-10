@@ -1,0 +1,160 @@
+@painel_header()
+
+{!form_open('Adicionar movimentação','branches')!}
+  {{csrf_field()}}
+  <div class="np-row">
+    <div class="crow">
+  <div class="np-row">
+    <div class="np-col local-msg"></div>
+  </div>
+  <div class="np-row">
+    <fieldset><legend>Informações básicas do título</legend>
+
+    <div class="np-col m4 np-padding-small">
+	  <label><i class="icon">qr_code</i>Código</label>
+      <input name="branche_code" type="text"  class="np-input np-border-green">
+    </div>
+	
+    <div class="np-col m2 np-padding-small">
+	  <label><i class="icon">fact_check</i>Parcelas</label>
+      <input type="number" name="branche_name" class="np-input np-border-red" required>
+    </div>
+
+	<div class="np-col m2 np-padding-small">
+	  <label><i class="icon">format_list_numbered</i>Intervalos</label>
+      <input type="number" name="company_website" class="np-input">
+    </div>
+	
+	<div class="np-col m4 np-padding-small">
+	  <label><i class="icon">date_range</i>Data de emissão</label>
+      <input type="date" name="company_website" class="np-input">
+    </div>
+	
+	<div class="np-col m4 np-padding-small">
+	  <label><i class="icon">date_range</i>Data de competência</label>
+      <input type="date" name="company_website" class="np-input">
+    </div>
+	
+	<div class="np-col m4 np-padding-small">
+	  <label><i class="icon">monetization_on</i>Valor</label>
+      <input type="text" name="company_website" class="np-input">
+    </div>
+	
+	
+	
+	<div class="np-col m4 np-padding-small">
+	  <label><i class="icon">date_range</i>Previsão de pagamento</label>
+      <input type="date" name="company_website" class="np-input">
+    </div>
+	</fieldset>
+	
+	
+	<fieldset><legend>Rateio do título</legend>
+	
+	   <div class="np-col m3 np-padding-small">
+	   <label><i class="icon">corporate_fare</i>Tipo</label>
+       <input name="pis" value="Título de pagamento" type="text" class="np-input">
+      </div>
+	
+	  <div class="np-col m3 np-padding-small">
+	   <label><i class="icon">corporate_fare</i>Filial</label>
+       <input name="pis" value="RJ" type="text" class="np-input">
+      </div>
+	
+	  <div class="np-col m3 np-padding-small">
+	   <label><i class="icon">corporate_fare</i>Responsável</label>
+       <input name="pis" value="Paulo Leonardo" type="text" class="np-input">
+      </div>
+	  
+	  <div class="np-col m3 np-padding-small">
+	   <label><i class="icon">corporate_fare</i>Situação</label>
+       <input name="pis" value="Aberto" type="text" class="np-input">
+      </div>
+	  
+	</fieldset>
+	
+	
+	<fieldset><legend>Classificação do título</legend>
+	
+	  <div class="np-col m3 np-padding-small">
+	   <label><i class="icon">list</i>Categoria Fixa</label>
+       <input name="pis" value="Folha de pagamento" type="text" class="np-input">
+      </div>
+	
+	  <div class="np-col m3 np-padding-small">
+	   <label><i class="icon">list</i>Categoria</label>
+       <input name="pis" value="Folha de pagamento" type="text" class="np-input">
+      </div>
+	  <div class="np-col m3 np-padding-small">
+	   <label><i class="icon">list</i>Tomador</label>
+       <input name="pis" value="Folha de pagamento" type="text" class="np-input">
+      </div>
+	  <div class="np-col m3 np-padding-small">
+	   <label><i class="icon">list</i>Projeto</label>
+       <input name="pis" value="Folha de pagamento" type="text" class="np-input">
+      </div>
+	  
+	</fieldset>
+	
+	
+	
+	
+
+
+	<fieldset><legend>Impostos a reter no título</legend>
+	<div class="np-col m2 np-padding-small">
+	  <label><i class="icon">money</i>PIS</label>
+      <input name="pis" type="text" class="np-input">
+    </div>
+	<div class="np-col m2 np-padding-small">
+	  <label><i class="icon">money</i>COFINS</label>
+      <input name="confins" type="text" class="np-input">
+    </div>
+	
+	<div class="np-col m2 np-padding-small">
+	  <label><i class="icon">money</i>CSLL</label>
+      <input name="csll" type="text" class="np-input">
+    </div>
+    
+	<div class="np-col m2 np-padding-small">
+	  <label><i class="icon">money</i>IRRF</label>
+      <input name="irrf" type="text" class="np-input">
+    </div>
+	
+	<div class="np-col m2 np-padding-small">
+	  <label><i class="icon">money</i>INSS</label>
+      <input name="inss" type="text" class="np-input">
+    </div>
+	
+	<div class="np-col m2 np-padding-small">
+	  <label><i class="icon">money</i>ISS</label>
+      <input name="iss" type="text" class="np-input">
+    </div>
+	
+	</fieldset>
+	
+	
+	<fieldset><legend>Rateio do título</legend>
+	
+	   <div class="np-col m6 np-padding-small">
+	   <label><i class="icon">corporate_fare</i>Cliente</label>
+       <input name="pis" value="Título de pagamento" type="text" class="np-input">
+      </div>
+	
+	  <div class="np-col m6 np-padding-small">
+	   <label><i class="icon">corporate_fare</i>Conta</label>
+       <input name="pis" value="RJ" type="text" class="np-input">
+      </div>
+	
+	  <div class="np-col m12 np-padding-small">
+	   <label><i class="icon">corporate_fare</i>Observações</label>
+       <textarea name="pis" class="np-input"></textarea>
+      </div>
+	  
+	</fieldset>
+	
+</div>
+  
+{!form_close()!}
+
+@painel_footer()

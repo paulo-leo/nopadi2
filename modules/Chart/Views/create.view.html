@@ -1,0 +1,122 @@
+@painel_header()
+
+{!form_open('Criar gráfico','chart')!}
+  {{csrf_field()}}
+  <div class="np-row">
+    
+	<div class="np-col m12">
+	   <label><i class="icon">list</i>Nome do gráfico</label>
+      <input name="chart_name" type="text" class="np-input np-border-red">
+    </div>
+	
+	<div class="np-col m3">
+	   <label><i class="icon">filter_1</i>Tipo</label>
+       <select name="type" class="np-select">
+	       <option value="line">Linha</option>
+           <option value="bar">Barra</option>
+	      <option value="pie">Pizza</option>
+	 <option value="radar">Radar</option>
+	 <option value="doughnut">Pizza oca</option>
+	 <option value="polarArea">Área polar</option>
+	 <option value="bubble">Bolas</option>
+	   </select>
+    </div>
+	
+	<div class="np-col m3">
+	   <label><i class="icon">check_box_outline_blank</i>Entidade</label>
+       <select name="table" class="np-select">
+	       <option value="users">users</option>
+		    <option value="tokens">tokens</option>
+	   </select>
+    </div>
+	
+	<div class="np-col m3">
+	   <label><i class="icon">format_list_bulleted</i>Função</label>
+       <select name="role" class="np-select">
+	        <option value="count">Contar</option>
+	        <option value="sum">Somar</option>
+		    <option value="avg">Média</option>
+			<option value="max">Maior</option>
+			<option value="min">Menor</option>
+	   </select>
+    </div>
+	
+	<div class="np-col m3">
+	   <label><i class="icon">list</i>Coluna</label>
+       <select name="group" class="np-select">
+	        <option value="status">Status</option>
+		   <option value="name">Nome</option>
+		   <option value="email">E-mail</option>
+	   </select>
+    </div>
+	
+	<div class="np-col m3">
+	   <label><i class="icon">list</i>Coluna</label>
+       <select class="np-select np-border">
+	       <option value="users">status</option>
+	   </select>
+    </div>
+	
+	<div class="np-col m3">
+	   <label><i class="icon">list</i>Intervalo</label>
+       <select name="datetime" class="np-select np-border">
+	       <option value="users">Hoje</option>
+		   <option value="users">Ontem</option>
+		   <option value="users">Essa semana</option>
+		   <option value="users">Essa quinzena</option>
+		   <option value="users">Esse mês</option>
+		   <option value="users">Esse trimestre</option>
+		   <option value="users">Esse semestre</option>
+		   <option value="users">Esse ano</option>
+		   <option value="users">Semana passada</option>
+		   <option value="users">Quinzena passada</option>
+		   <option value="users">Mês passado</option>
+		   <option value="users">Trimestre passado</option>
+		   <option value="users">Semestre passado</option>
+		   <option value="users">Ano passado</option>
+	   </select>
+    </div>
+	
+	<div class="np-col m3">
+	   <label><i class="icon">list</i>Início</label>
+       <input class="np-input np-border" type="date" name="">
+    </div>
+	
+	<div class="np-col m3">
+	   <label><i class="icon">list</i>Fim</label>
+       <input class="np-input np-border" type="date" name="">
+    </div>
+	
+	<a id="mount_query" class="np-small np-btn np-pink np-hover-red">Montar consulta</a>
+	<a href="" class="np-small np-btn np-blue np-hover-green">Pré-visualização</a>
+	
+	<div class="np-col m12">
+	  <label><i class="icon">code</i>Código fonte do gráfico</label>
+      <textarea name="code" class="np-input" style="min-height:200px"></textarea>
+    </div>
+ </div>
+  
+ <script>
+ $(function(){
+ 
+   var type = $("select[name=type]");
+   var table = $("select[name=table]");
+   var role = $("select[name=role]");
+   var code = $("textarea[name=code]");
+   var group = $("select[name=group]");
+   var btnQuery = $("#mount_query");
+   
+   btnQuery.click(function(){
+      var query = "SELECT status,"+role.val()+"(*) as total FROM "+table.val()+" group by "+group.val();
+	  code.val(query);
+   });
+   
+ });
+ 
+ </script> 
+  
+  
+  
+{!form_close()!}
+
+@painel_footer()

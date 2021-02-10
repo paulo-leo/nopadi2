@@ -1,0 +1,67 @@
+@include("@Painel/Views/header")
+<div class="" style="min-height:500px">
+<table class="np-table-all np-bordered np-border-0">
+  <thead>
+    <tr>
+      <th><i class="material-icons" style="font-size:21px">list</i>#name#</th>
+      <th><i class="material-icons" style="font-size:21px">phone</i>#phone#</th>
+      <th colspan="1"><i class="material-icons" style="font-size:21px">flag</i>#code#</th> 
+	  <th colspan="1"><i class="material-icons" style="font-size:21px">list</i>Razão social</th>
+    </tr>
+  </thead>
+  <tbody>
+  
+   @if($list->results)
+      @in($list->results)
+	
+	  @php
+	     $code = (strlen($code) < 2) ? '<span class="np-text-red">Código não informado</span>' : $code;
+	  @endphp
+     <tr class="np-item-{{$id}} np-animate-left">
+      <td>
+	     <a class="np-link np-text-blue np-hover-text-green" href="{{url("crm/accounts/{$id}")}}">
+		 <i class="material-icons" style="font-size:21px">link</i>{{$name}}</a>
+	  </td>
+      <td>
+	    {{$company_phone}}
+	  </td>
+      <td>
+	     {!$code!}
+	  </td>
+	  <td>
+        {{$company_name}}
+	  </td>
+    </tr>
+	    @endin
+		
+		  <tr>
+			   <td colspan="4">
+			     <div class="np-right">{!$list->links!}</div>
+			   </td>
+		 </tr>
+		 @else
+            <tr><td colspan="4"><h4 class="text-danger np-animate-right">#user.not.show#</h4></td></tr>
+	 @endif
+	
+  </tbody>
+</table>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@include("@Painel/Views/footer")

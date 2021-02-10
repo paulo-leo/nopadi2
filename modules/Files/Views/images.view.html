@@ -1,0 +1,127 @@
+<div class="modal" id="modal-file2-image2-featured">
+<div class="modal-content" style="min-height:400px">
+     <h3 class="col m12 center border-bottom">Imagens</h3>
+	 <div class="cell-row">
+	    <div class="cell">
+	    <input class="input" type="number" min="50" value="400" id="img-width"></div>
+		<div class="cell">
+		<input class="input" type="number" min="50" value="300" id="img-height"></div>
+	 </div>
+	 
+	 
+	  <div class="">
+     <div class="col m12 center margin-bottom">
+	     <div class="floating blue hover-indigo link btn-modal-content-file2-list"><i class="icon">image</i></div>
+		  <div class="floating green hover-teal link btn-modal-content-file2-upload"><i class="icon">file_upload</i></div>
+		  <div class="floating red hover-pink link btn-modal-content-images"><i class="icon">close</i></div>
+	 </div>
+
+	 
+     <div class="col m12" id="modal-content-file2-list"><div id="file2-load-images"></div></div>
+	 
+	 
+	 <div id="modal-content-file2-upload" style="display:none">
+     
+    <form id="form-upload-image2-dest" enctype="multipart/form-data" action="{{url('dashboard/images')}}" method="POST">
+	{{csrf_field()}}
+	<input type="hidden" name="user_id" value="{{user_id()}}">
+	<input type="hidden" name="type" value="image">
+	<p class="col m12">Nome ou descrição da imagem
+	<input type="text"name="name" class="input"/>
+	</p>
+     Enviar esse arquivo: <input name="userfile" type="file" class="input margin-bottom" />
+	 <div class="form-upload-image2-dest-msg col m12"></div>
+    <input type="submit" class="button green small" value="Enviar imagem"/>
+    </form>
+	
+	</div>
+	 </div>
+</div>
+</div>
+
+<!-- botão para acessar o modal de imagem destacada
+<span class="button blue btn-modal-content-images">Imagem de capa</span>
+
+<div style="heigth:100px" class="red">
+ <input type="hidden" id="file2-image2-featured"/>
+ <div id="file2-image2-featured-show"></div>
+</div>
+-->
+
+<script>
+$(function(){
+
+function listFiles(url){
+
+     var images = $('#file2-load-images');
+	 $.ajax({
+	    url:url,
+		type:'get',
+		beforeSend:function(){
+		   images.html('<div class="progress yellow"><div class="indeterminate green"></div></div>');
+		},
+		success:function(data){
+		     images.html(data);
+		}
+	 });
+	 
+	 $('#file2-load-images').on('click','div > .btn-files',function(){
+        var id = $(this).attr('id');
+		listFiles(id);
+     });
+	 
+}
+
+
+$('#file2-load-images').on('click','div > img',function(){
+
+    var src = $(this).attr('src'); 
+	var alt = $(this).attr('alt'); 
+	var w = $('#img-width').val();
+	var h = $('#img-height').val();
+	var img = '<img src="'+src+'" alt="'+alt+'" style="width:100%;max-width:'+w+'px;max-height:'+w+'px;">';
+	$('.trumbowyg-editor').append(img);
+   
+});
+
+
+$(".btn-modal-content-images").click(function(){
+     $("#modal-file2-image2-featured").toggle();
+     listFiles('{{url("dashboard/files?type=image")}}');
+});
+
+
+$(".btn-modal-content-file2-upload").click(function(){
+   $("#modal-content-file2-list").hide();
+   $("#modal-content-file2-upload").show();
+});
+
+$(".btn-modal-content-file2-list").click(function(){
+   $("#modal-content-file2-upload").hide();
+   $("#modal-content-file2-list").show();
+});
+
+
+$('#form-upload-image2-dest').submit(function() { 
+    // prepare Options Object 
+    var options = { 
+        type:'post',
+        url:  '{{url("dashboard/files")}}', 
+        beforeSend : function(){
+          $('.form-upload-image2-dest-msg').html('<div class="progress"><div class="indeterminate"></div></div>');
+     }, success: function(data) { 
+	       
+				$("#modal-content-file2-upload").hide();
+                $("#modal-content-file2-list").show();
+				$('.form-upload-image2-dest-msg').html(data);
+				listFiles('{{url("dashboard/files?type=image")}}');
+        } 
+    };
+    // submit the form 
+    $(this).ajaxSubmit(options); 
+    // return false to prevent normal browser submit and page navigation 
+    return false; 
+  });
+
+});
+</script>

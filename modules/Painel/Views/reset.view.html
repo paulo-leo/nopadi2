@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-br">
+<title>#redefine_password#</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="np-ui.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link rel="stylesheet" href="{{asset('np-ui/np-ui.css')}}">
+<script src="{{asset('js/jquery.min.js')}}"></script>
+<style>
+html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
+.material-icons {
+  position:relative;
+  top:5px;
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+}
+</style>
+<body class="np-light-grey">
+
+     <form class="np-content np-white np-card np-round np-animate-top" id="login" style="max-width:420px;min-height:300px">
+	 {{csrf_field()}}
+	 <div class="np-progress np-white np-progress-form" style="display:none;height:5px;z-index:5;position:relative;top:0px">
+         <div class="np-indeterminate np-red"></div>
+     </div>
+	   <div class="np-padding">
+	    <a href="index.html"><h3 class="np-center"><img class="np-hover-opacity" style="position:relative;top:15px" class="mb-4" src="{{asset('img/russel-logo-text-v2.png')}}" alt="" width="250" height="90"></h3></a>
+		<h5 class="np-center">#redefine_password#</h5>
+		<div class="local-msg"></div>
+		<label class=""><i class="material-icons">email</i>#insert_your_email#</label>
+        <input class="np-input" name="email" placeholder="#email#" type="email" required autofocus>
+		  
+		  
+		  <button class="np-btn np-border np-margin-top np-hover-red np-border-red np-round np-block">#send#</button>
+		  
+		  <div class="np-center">
+			  <a href="{{url('login')}}" class="np-button np-text-red np-hover-white">#to_login_page#</a>
+          </div>
+		  </div>
+    </form>   
+<script>
+$(function(){
+
+  $("#login").submit(function(){
+     var vars = $(this).serialize();
+	 var msg = $(".local-msg");
+     
+     $.ajax({
+     url : "{{url('password/email')}}",
+     type : 'post',
+     data : vars,
+     beforeSend : function(){
+	 
+           $('.np-progress-form').show();
+     },
+	 success : function(data){
+          msg.html(data);
+		  $('.np-progress-form').hide();
+     }
+    }); 
+  
+     return false;
+  });
+
+});
+</script>
+</body>

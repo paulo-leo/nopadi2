@@ -1,0 +1,67 @@
+@painel_header()
+{!painel_header($record->name.'|business','crm/accounts/create',[
+'pdf'=>'Exportar como PDF',
+'email'=>'Enviar e-mail para empresa',
+'pdfx'=>'Enviar e-mail para todos os contatos dessa empresa'
+])!}
+<div class="np-padding np-round">
+
+<div class="np-card-2 np-col m12 np-padding np-margin-top np-animate-left np-white np-round-large">
+    <p><i class="material-icons">account_circle</i>Proprietário da Empresas: <b>Paulo Leonardo</b></p>
+	<p><i class="material-icons">phone</i>Telefone:
+	@php
+	  $record->company_phone = strlen($record->company_phone) > 5 ? $record->company_phone : '<b class="np-text-red">não informado</b>'; 
+	@endphp
+	{!$record->company_phone!}</p>
+</div>
+
+<div class="np-card-2 np-col m12 np-padding np-margin-top np-animate-right np-white np-round-large">
+    <h4><i class="material-icons">business</i>Empresas Informações</h4>
+	   <table class="np-table np-table-all">
+	       <tr>
+	          <td>Nome da empresa</td>
+			  <td>CNPJ/Código</td>
+		      <td>Fonte de prospecção</td>
+		   </tr>
+		   <tr>
+	          <td>{{$record->name}}</td>
+			  <td>{{$record->code}}</td>
+		      <td>{{$record->prospecting_source}}</td>
+		   </tr>
+	    </table>
+		<br>
+		
+		<table class="np-table np-table-all">
+	       <tr>
+		      <td>CEP</td>
+	          <td>Estado</td>
+			  <td>Cidade</td>
+		      <td>Bairro</td>
+			  <td>Número</td>
+			  <td>Complemento</td>
+		   </tr>
+		   <tr>
+		      <td>{{$record->address_zip_code}}</td>
+	          <td>{{$record->address_state}}</td>
+			  <td>{{$record->address_city}}</td>
+		      <td>{{$record->address_neighborhood}}</td>
+			  <td>{{$record->address_number}}</td>
+			  <td>{{$record->address_complement}}</td>
+		   </tr>
+	    </table><br>
+</div>
+
+
+<div class="np-card-2 np-col m12 np-padding np-margin-top np-animate-left np-white np-round-large">
+    <h4><i class="material-icons">business_center</i>Negócios da Empresa</h4>
+    <p class="np-text-red">Não há negócios vinculados. </p>
+</div>
+
+
+</div>
+
+@painel_footer()
+
+
+
+

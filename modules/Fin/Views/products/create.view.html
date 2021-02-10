@@ -1,0 +1,53 @@
+@include("@Painel/Views/header")
+
+@include("@CRM/Views/header")
+
+<form>
+  
+  <div class="row w3-margin">
+  <h4 class="col"><i class="icon">add</i>#add# Produto</h4>
+  
+  <div class="btn-group" role="group">
+       <button type="button" class="btn btn-outline-danger">#cancel#</button>
+       <button type="button" class="btn btn-outline-success">#save#</button>
+  </div>
+  
+  </div>
+  
+  <div class="row">
+    <div class="col">
+	  <label><i class="icon">face</i>#name#</label>
+      <input type="text" class="form-control">
+    </div>
+    <div class="col">
+	  <label><i class="icon">star</i>#price#</label>
+      <input type="text" class="form-control">
+    </div>
+  </div>
+
+
+  <div class="row">
+    <div class="col">
+	  <label><i class="icon">public</i>Site da web</label>
+      <input type="text" class="form-control">
+    </div>
+    <div class="col">
+	  <label><i class="icon">info</i>#status#</label>
+      <select class="custom-select">
+      <option>Habilitado</option>
+	  <option>Desabilitado</option>
+      <option>Esgotado</option>
+    </select>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col">
+	  <label><i class="icon">description</i>Descrição</label>
+      <textarea class="form-control" rows="3"></textarea>
+    </div>
+  </div>
+  
+</form><br><br>
+
+@include("@Painel/Views/footer")

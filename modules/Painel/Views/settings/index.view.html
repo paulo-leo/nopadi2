@@ -1,0 +1,52 @@
+@include("@Painel/Views/header")
+
+
+ <div class="np-row np-content" style="min-height:500px">
+ 
+    <h3 class="np-col m12 np-center">#settings#</h3>
+ 
+  <div class="np-col m3 np-padding-small">
+    <div class="np-card np-round-large np-white np-animate-zoom" style="min-height:180px">
+	 <div class="np-bar np-bar-block">
+	 <a class="np-bar-item"><i class="material-icons">group</i>Usuários</a>
+     <a href="{{url('users')}}" class="np-bar-item np-button np-hover-gray">#users#</a>
+    <a href="{{url('users/create')}}" class="np-bar-item np-button np-hover-gray">#user.create#</a>
+    </div> 
+    </div>
+  </div>
+  
+  <div class="np-col m3 np-padding-small">
+    <div class="np-card np-round-large np-white np-animate-zoom" style="min-height:180px">
+	 <div class="np-bar np-bar-block">
+	 <a class="np-bar-item"><i class="material-icons">device_hub</i>Fluxo de Trablaho</a>
+     <a href="#" class="np-bar-item np-button np-hover-gray">Listar fluxo</a>
+     <a href="#" class="np-bar-item np-button np-hover-gray">Criar fluxo</a>
+    </div> 
+    </div>
+  </div>
+  
+   <div class="np-col m3 np-padding-small">
+    <div class="np-card np-round-large np-white np-animate-zoom" style="min-height:180px">
+	 <div class="np-bar np-bar-block">
+	 <a class="np-bar-item"><i class="material-icons">extension</i>Framework</a>
+     <a href="#" class="np-bar-item np-button np-hover-gray">Ambiente</a>
+     <a href="#" class="np-bar-item np-button np-hover-gray">Servidor SMTP</a>
+     <a href="#" class="np-bar-item np-button np-hover-gray">Banco de dados</a>
+    </div> 
+    </div>
+  </div>
+  
+   <div class="np-col m3 np-padding-small">
+    <div class="np-card np-round-large np-white np-animate-zoom" style="min-height:180px">
+	 <div class="np-bar np-bar-block">
+	 <a class="np-bar-item"><i class="material-icons">developer_mode</i>Desenvolvimento</a>
+     <a href="#" class="np-bar-item np-button np-hover-gray">API</a>
+     <a href="#" class="np-bar-item np-button np-hover-gray">Automação</a>
+     <a href="#" class="np-bar-item np-button np-hover-gray">Módulos</a>
+    </div> 
+    </div>
+  </div>
+</div> 
+
+
+@include("@Painel/Views/footer")

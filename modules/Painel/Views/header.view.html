@@ -1,0 +1,195 @@
+<?php if(!auth()) to_url('login'); ?>
+<!DOCTYPE html>
+<html>
+<title>{{NP_NAME}}</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="{{asset('favicon.png')}}" />
+<link rel="stylesheet" href="{{asset('np-ui/np-ui.css')}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<script src="{{asset('js/jquery.min.js')}}"></script>
+<script src="{{asset('js/Chart.min.js')}}"></script>
+<body class="np-light-grey">
+<script>
+$(document).ready(function() {
+      $('.np-btn-toggle-menu').click(function(){
+	      $('.np-sidebar-menu').toggle();
+	  });
+});
+</script>
+<!-- Top container -->
+<div class="np-progress np-black" id="np-top-loading" style="height:6px;z-index:5;position:fixed;top:-9px;display:none;">
+         <div class="np-indeterminate np-red"></div>
+</div>
+<div class="np-bar np-top np-black np-large" style="z-index:4" id="np-main-menu-top"> 
+   <button  id="myOverlay" class="np-hide-large np-bar-item np-button np-red np-hover-none np-hover-text-light-grey np-btn-toggle-menu"><i class="material-icons">menu</i></button>
+   <span class="np-bar-item np-left"><a style="padding:2px" href="{{url('dashboard')}}" class="np-button">{{NP_NAME}}</a></span>
+      <div class="np-right">
+	   <a href="#" onclick="document.getElementById('np-id-modal-apps').style.display='block'" class="np-bar-item"><i class="material-icons np-hover-text-green">apps</i></a>
+	    <a onclick="w3_openN()" class="np-bar-item np-link np_notification_btn"><div style="position:relative;top:1px;left:15px;height:0px" class="np-link np_notification_total"></div><i class="material-icons np-hover-text-green">notifications_none</i></a>
+	    <a onclick="w3_openU()" class="np-bar-item np-link"><i class="material-icons np-hover-text-green">account_circle</i></a>
+	  </div>
+</div>
+
+
+
+<!-- Sidebar/menu -->
+<?php 
+   $np_painel_margin = null;
+   $route_app = route_first();
+   $route_app_itens = array(
+    'settings',
+	'users',
+	'profile',
+	'dashboard'
+   );
+    if(!in_array($route_app,$route_app_itens))
+	{
+       $np_painel_margin = 'margin-left:300px;';
+	   view('@'.ucfirst($route_app).'/sidebar');   
+   }
+?>
+
+<div class="np-sidebar np-bar-block np-card np-animate-right" style="display:none;width:300px;right:0;top:0;z-index:4" id="mySidebarU">
+  <button class="np-bar-item np-red np-button"
+  onclick="w3_closeU()"><i class="material-icons">close</i>#close#</button>
+  <div class="np-padding-small">
+  <div class="np-circle np-center np-card np-gray" style="margin:0 auto; width:50px;height:50px">
+	</div>
+	<a href="{{url('profile')}}" class="np-bar-item np-link np-large np-hover-text-blue"><i class="material-icons np-text-orange">account_circle</i>{{user_name()}}</a>
+	<a href="{{url('settings')}}" class="np-bar-item np-link np-hover-text-blue"><i class="material-icons np-text-green np-spin">settings</i>#settings#</a>
+	
+	<a class="np-bar-item np-link np-hover-text-blue"><i class="material-icons np-text-indigo">headset_mic</i>#support_nopadi#</a>
+	
+	<a onclick="w3_openM()" class="np-bar-item np-link np-hover-text-blue"><i class="material-icons np-text-red">power_settings_new</i>#go_out#</a>
+	
+	</div>
+</div>
+
+
+<div class="np-sidebar np-bar-block np-card np-animate-top" style="display:none;width:300px;right:0;top:0;z-index:4" id="mySidebarN">
+  <button class="np-bar-item np-red np-button"
+  onclick="w3_closeU()"><i class="material-icons">close</i>#close#</button>
+  
+  <!--
+  <h3 class="np-bar-item np-center np-animate-zoom"><i class="material-icons np-xxlarge">notifications_off</i><br>Não há notificações</h3>
+  -->
+   <ul class="np-ul np_notification_local">
+  </ul>
+  <script>
+    $(function(){
+	   function np_notification_btn()
+	   {
+		   $.ajax({
+			  url:"{{url('notifications/total')}}",
+			  type:"get",
+			  success:function(data){
+			    if(data > 0)
+			    {
+			     $(".np_notification_total").html("<div class='np-animate-zoom np-padding-small np-center np-small np-text-red'>"+data+"</div>");
+				}
+			  },
+			  error:function(){
+			   
+			  }
+			});
+			
+	   }
+	   
+	   function  np_notification_list()
+	   {
+		  $.ajax({
+			  url:"{{url('notifications')}}",
+			  type:"get",
+			  success:function(data){
+			    $(".np_notification_local").html(data);
+			  },
+			  error:function(){
+			   
+			  }
+			});
+	   }
+	   
+	    $(".np_notification_btn").click(function(){
+		   np_notification_list();
+		});
+        np_notification_btn();
+		setInterval(function(){ np_notification_btn(); }, 180000);
+		
+		$(".np_notification_local").on("click",".np_notification_delete",function(){
+		   var id = $(this).attr("id");
+		   var item = $(".np_notification_item-"+id);
+		    $.ajax({
+              url : "{{url('notifications')}}",
+              type : "delete",
+              data : {id:id}});
+		});
+
+	});
+  </script>
+</div>
+
+<!-- Modal sair -->
+<div id="np-modal-confirm-logout" class="np-modal">
+  <div class="np-modal-content np-round np-animate-top" style="max-width:450px">
+    <div class="np-container np-padding-small">
+      <span onclick="document.getElementById('np-modal-confirm-logout').style.display='none'"
+      class="np-button np-display-topright np-round np-small np-padding-small"><i class="material-icons">close</i></span>
+	  <h3>#go_out#</h3>
+      <p>#leave_question#</p>
+	  <a onclick="document.getElementById('np-modal-confirm-logout').style.display='none'" class="np-small np-btn np-border np-border-red np-hover-red np-round">#cancel#</a>
+	  <a href="{{url('logout')}}" class="np-small np-btn np-border np-border-green np-hover-green np-round">#yes#</a>
+    </div>
+  </div>
+</div> 
+
+
+
+<!-- !PAGE CONTENT! -->
+<div class="np-main" style="{{$np_painel_margin}}margin-top:43px;">
+
+
+<script>
+
+function w3_openU() {
+  document.getElementById("mySidebarU").style.display = "block";
+}
+
+
+function w3_openN() {
+  document.getElementById("mySidebarN").style.display = "block";
+}
+
+function w3_closeU() {
+  document.getElementById("mySidebarU").style.display = "none";
+  document.getElementById("mySidebarN").style.display = "none";
+}
+
+function w3_openM() {
+  document.getElementById("np-modal-confirm-logout").style.display = "block";
+  w3_closeU();
+}
+
+// Get the Sidebar
+var mySidebar = document.getElementById("mySidebar");
+
+// Get the DIV with overlay effect
+var overlayBg = document.getElementById("myOverlay");
+
+// Toggle between showing and hiding the sidebar, and add overlay effect
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+    overlayBg.style.display = "none";
+  } else {
+    mySidebar.style.display = 'block';
+    overlayBg.style.display = "block";
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+  mySidebar.style.display = "none";
+  overlayBg.style.display = "none";
+}
+</script>

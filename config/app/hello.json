@@ -1,0 +1,15 @@
+{
+   "styles":{
+	  "nopadi":"np-ui/np-ui"
+	},
+	"scripts":{
+	},
+	"hello": {
+	   "info":"np-panel np-pale-blue np-leftbar np-border-blue np-animate-left np-padding",
+	   "success":"np-panel np-pale-green np-leftbar np-border-green np-animate-left np-padding",
+	   "danger":"np-panel np-pale-red np-leftbar np-border-red np-animate-left np-padding",
+	   "warning":"np-panel np-pale-yellow np-leftbar np-border-yellow np-animate-left np-padding"
+	}
+}
+
+
