@@ -129,8 +129,15 @@ class Controller
         $this->objectWriteNot("total");
     }
 	
+	public function home()
+    {
+        $this->objectWriteNot("home");
+    }
+	
 	public function filter()
     {
         $this->objectWriteNot("filter");
     }
+	public function record(){}
+	public function records(){}
 }

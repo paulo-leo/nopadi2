@@ -1,8 +1,63 @@
-@include("header")
-<div class="np-content np-round np-padding">
-      <div class="np-card np-padding np-animate-top np-white" style="min-height:500px">
-	    <img style="position:relative;top:15px" class="mb-4" src="{{asset('img/russel-logo-text-v2.png')}}" alt="" width="250" height="90">
-        <h1 class="np-text-red">#page.not.found#</h1>
-      </div>
-	  @include("footer")
-</div>	
+<!DOCTYPE html>
+<html class="loading" lang="en" data-textdirection="ltr">
+<!-- BEGIN: Head-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Materialize is a Material Design Admin Template,It's modern, responsive and based on Material Design by Google.">
+    <meta name="keywords" content="materialize, admin template, dashboard template, flat admin template, responsive admin template, eCommerce dashboard, analytic dashboard">
+    <meta name="author" content="ThemeSelect">
+    <title>#page.not.found#</title>
+    <link rel="apple-touch-icon" href="{{asset()}}/app/images/favicon/apple-touch-icon-152x152.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset()}}/app/images/favicon/favicon-32x32.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- BEGIN: VENDOR CSS-->
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/vendors/vendors.min.css">
+    <!-- END: VENDOR CSS-->
+    <!-- BEGIN: Page Level CSS-->
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/themes/vertical-menu-nav-dark-template/materialize.css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/themes/vertical-menu-nav-dark-template/style.css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/pages/page-404.css">
+    <!-- END: Page Level CSS-->
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/custom/custom.css">
+    <!-- END: Custom CSS-->
+</head>
+<!-- END: Head-->
+
+<body class="vertical-layout page-header-light vertical-menu-collapsible vertical-menu-nav-dark preload-transitions 1-column  bg-full-screen-image  blank-page blank-page" data-open="click" data-menu="vertical-menu-nav-dark" data-col="1-column">
+    <div class="row">
+        <div class="col s12">
+            <div class="container">
+                <div class="section section-404 p-0 m-0 height-100vh">
+                    <div class="row">
+                        <!-- 404 -->
+                        <div class="col s12 center-align white">
+                            <img src="{{asset()}}/app/images/gallery/error-2.png" class="bg-image-404" alt="">
+                            <h1 class="error-code m-0">404</h1>
+                            <h4 class="mb-2">#page.not.found#</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-overlay"></div>
+        </div>
+    </div>
+
+    <!-- BEGIN VENDOR JS-->
+    <script src="{{asset()}}/app/js/vendors.min.js"></script>
+    <!-- BEGIN VENDOR JS-->
+    <!-- BEGIN PAGE VENDOR JS-->
+    <!-- END PAGE VENDOR JS-->
+    <!-- BEGIN THEME  JS-->
+    <script src="{{asset()}}/app/js/plugins.js"></script>
+    <script src="{{asset()}}/app/js/search.js"></script>
+    <script src="{{asset()}}/app/js/custom/custom-script.js"></script>
+    <!-- END THEME  JS-->
+    <!-- BEGIN PAGE LEVEL JS-->
+    <!-- END PAGE LEVEL JS-->
+</body>
+
+</html>

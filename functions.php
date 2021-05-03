@@ -20,6 +20,102 @@ $GLOBALS['np_instance_of_json'] = new Json('config/app/hello.json');
 $GLOBALS['np_instance_of_request'] = new Request;
 $GLOBALS['np_instance_of_translater'] = new Translation;
 
+/*Função para concatenat texto para exportação em PDF*/
+
+function np_pdf_start(){
+	if(!isset($_SESSION)) session_start();
+	if(!isset($_SESSION['np_pdf_export'])) $_SESSION['np_pdf_export'] = array();
+}
+
+function np_pdf_set($key,$value=null){
+    np_pdf_start();
+	if(!array_key_exists($key,$_SESSION['np_pdf_export'])){
+		$_SESSION['np_pdf_export'][$key] = $value;
+	}
+}
+
+function intdate($date=null)
+{
+   $date = is_null($date) ? date('Ymd') : $date;
+   $date = str_ireplace(['-','/','.'],'',$date);
+   return intval($date);
+}
+
+function np_pdf_get($key=null){
+	np_pdf_start();
+	$values = $_SESSION['np_pdf_export'];
+	$keys = "<link rel='stylesheet' type='text/css' href='".asset('app/css/themes/vertical-menu-nav-dark-template/materialize.css')."'>
+	<style>.np-hide-element{display:none !important;}</style>";
+	
+	if(is_null($key)){
+		foreach($values as $value){
+			$keys .= $value;
+		}
+		return $keys;
+	}else{
+		if(array_key_exists($key,$_SESSION['np_pdf_export'])){
+		   $keys .= $_SESSION['np_pdf_export'][$key];
+		   return $keys;
+		}
+	}
+}
+
+function np_pdf_del($key=null){
+	np_pdf_start();
+	if(is_null($key)){
+		unset($_SESSION['np_pdf_export']);
+	}else{
+		if(array_key_exists($key,$_SESSION['np_pdf_export'])){
+			unset($_SESSION['np_pdf_export'][$key]);
+		}
+	}
+}
+
+/**/
+function errors(){
+	if (!isset($_SESSION)) session_start();
+	
+	if(isset($_SESSION['np_errors'])){
+		return $_SESSION['np_errors'];
+	}
+}
+
+function errors_message(){
+	if(errors()){
+		$text = implode(' e ',errors());
+		$text = strtolower($text);
+		$text = str_ireplace('. ',' ',$text);
+		$text = ucfirst($text);
+		$text = $text.'.';
+		$text = str_ireplace('..','.',$text);
+		return $text;
+	}
+}
+
+/*Formatção para moedas*/
+function format_money_sup($float,$sim='R$',$span='teal-text',$sup='teal-text'){
+	 $float = floatval($float);
+	 return '<span class="'.$span.'">'.$sim.' '.number_format($float, 2, '<sup class="'.$sup.'">,', '.').'</sup></span>'; 
+}
+
+function format_money($float,$sim='R$',$sep=','){
+	 return $sim.' '.number_format($float, 2, $sep, '.'); 
+}
+
+function theme($color=null,$colors=array()){
+     if(in_array(NP_THEME,$colors)){
+		return $color;
+	 }else{
+		return NP_THEME;
+	 }
+}
+
+function theme_null($color=null,$colors=array()){
+     if(in_array(NP_THEME,$colors)){
+		return $color;
+	 }
+}
+
 function route_first()
 {
 	return Param::first();
@@ -80,7 +176,7 @@ function request($key = null)
 }
 
 /*Extrai os ID's das linhas colocando em um novo array com ID e value. Essa função é geralmente usada nos retornos do banco de dados*/
-function id_value($array, $val, $id = 'id')
+function id_value($array, $val='name', $id = 'id')
 {
 	$x = array();
 	if (count($array) > 0) {
@@ -111,6 +207,12 @@ function get($x, $dafault = null)
 	return $instance->get($x, $dafault);
 }
 
+function get_search(){
+	$search = get('search');
+	$search = ($search != 'search' && !is_null($search)) ? $search : false;
+	return $search;
+}
+
 /*Função para pegar todos os requests da aplicação*/
 function get_all($except = null)
 {
@@ -129,10 +231,27 @@ function has_get($x)
 function view($file, $scope = null)
 {
 	$instance = $GLOBALS['np_instance_of_view'];
-	$instance->render($file, $scope);
+	ob_start();
+	$instance->render($file, $scope);	
+	$view = ob_get_clean();
+	return $view;
 }
 
-/*Função para verificar se um token crsf de sessão existe. Caso exista, a função retornará o token no formato de string, caso contário, a funçã retonará falso*/
+function template($html,$np_scope=null){
+	
+	$np_scope = !is_null($np_scope) && is_array($np_scope) ? $np_scope : array();
+	extract($np_scope);
+	ob_start();
+
+    $var_html_open = 'echo "<div>"; ';
+	$var_html_end = 'echo " </div>";';
+    $html = $var_html_open.$html.$var_html_end;
+    eval($html);	
+	$template = ob_get_clean();
+	return $template;
+}
+
+/*Função para verificar se um token crsf de sessão existe. Caso exista, a função retornará o token no formato de string, caso contário, a função retonará falso*/
 //{{csrf_field()}}
 function csrf_token()
 {
@@ -157,9 +276,41 @@ function auth($role = null)
 /*Retorna a URL(base) da aplicação*/
 function url($uri = null)
 {
-	$x = $GLOBALS['np_instance_of_uri'];
-	$uri = (is_null($uri) || $uri == '/') ? null : $uri;
-	return $x->base() . $uri;
+	if('#' == substr($uri,0,1))
+	{
+		return $uri;
+	}
+	elseif('https:' == strtolower(substr($uri,0,6)) || 'http:' == strtolower(substr($uri,0,5)))
+	{
+		return $uri;
+	}
+	else
+	{
+		$x = $GLOBALS['np_instance_of_uri'];
+	    $uri = (is_null($uri) || $uri == '/') ? null : $uri;
+	    return $x->base() . $uri;
+	}
+}
+
+function href($uri = null){
+	if('@show:' == strtolower(substr($uri,0,6)))
+	{
+		$id = substr($uri,6);
+		return 'onclick="document.getElementById(\''.$id.'\').style.display=\'block\'"';
+	}
+	elseif('@hide:' == strtolower(substr($uri,0,6)))
+	{
+		$id = substr($uri,6);
+		return 'onclick="document.getElementById(\''.$id.'\').style.display=\'none\'"';
+	}
+	elseif('@id:' == strtolower(substr($uri,0,4)))
+	{
+		$id = substr($uri,4);
+		return 'id="'.$id.'"';
+	}
+	else{
+		return 'href="'.url($uri).'"';
+	}
 }
 
 /*Retorna os gets(querys) da URL para aplicar um filtro nos botões de paginação*/
@@ -169,21 +320,42 @@ function pag_filter($pag)
 	$uri = explode('?', $x->uri());
 	$uri = isset($uri[1]) ? $uri[1] : false;
 
-	if ($uri) {
+	if ($uri)
+	{
 		$uri = preg_replace("/(page=[0-9]+)/simU", '', $uri);
 		return str_ireplace(['&&&', '&&'], '&', $pag . '&' . $uri);
 	} else return $pag;
 }
+/*Obtem a URI atual da página ou rota*/
+function get_uri($query=true)
+{
+	$x = $GLOBALS['np_instance_of_uri'];
+	$x = $x->uri();
+	
+	if($query){
+		return $x;
+	}else{
+		$query = explode('?',$x);
+		return $query[0];
+	}
+}
+
+/*Define um valor padrão se o campo for nulo ou vazio*/
+function if_null($value,$default=""){
+	return is_null($value) || empty($value) || $value == "" ? $default : $value; 
+}
+
 
 /*verfifica se a URL atual pertence a uma API*/
 function is_api($api = 'api')
 {
-	$x = $GLOBALS['np_instance_of_uri'];
-	$api = $x->base() . $api;
-	$uri = $x->uri();
-	$api = str_ireplace('/', '\/', $api);
-
-	return preg_match("/^({$api})(\/[A-Za-zÀ-ú0-9\.\-\_]+)*$/i", $uri);
+	$route = Param::first();
+	if($route == $api) return true;
+	else return false;
+}
+function is_method($method='get')
+{
+	return Request::isMethod($method);
 }
 
 /*Verifica se está na rota atual. Se o segundo parametro for 'true', a função irá ignorar a query na URL*/
@@ -265,25 +437,44 @@ function param($key)
 {
 	return call_user_func('Nopadi\Http\Param::get', $key);
 }
-
+/*Retorna os parâmetros das rotas se for inteiro*/
 function int_param($key)
 {
 	return call_user_func('Nopadi\Http\Param::int', $key);
 }
+/*Retorna os parâmetros das rotas se for float*/
 function float_param($key)
 {
 	return call_user_func('Nopadi\Http\Param::float', $key);
 }
-
+/*Verifica se o nome do parâmetro da rota existe e qual é o seu valor*/
 function is_param($key,$val)
 {
 	return call_user_func('Nopadi\Http\Param::is', $key,$val);
+}
+
+function user_set($key,$value=null)
+{
+		if(Auth::check()){
+			if(isset($_SESSION['np_user_logged'][$key])) $_SESSION['np_user_logged'][$key] = $value; 
+		}
 }
 
 /*Retorna os dados de sessão aberta do usuário*/
 function user($role = null)
 {
 	return call_user_func('Nopadi\Http\Auth::user', $role);
+}
+/*Retorna todos os dados dos usuários no formato de array(associativo)*/
+function user_all($role = null)
+{
+	return user($role)->all;
+}
+
+/*Retorna o nome da função/tipo do usuário da sessão atual*/
+function user_role()
+{
+	return user()->role;
 }
 
 /*Retorna o id do usuário da sessão atual*/
@@ -294,7 +485,7 @@ function user_id()
 	else 
 		return 0;
 }
-
+/*Retorna o nome do usuário da sessão atual*/
 function user_name()
 {
 	if(user()->name) 
@@ -302,12 +493,15 @@ function user_name()
 	else 
 		return 0;
 }
-
-/*Retorna o nome do diretório publico (public_html/ ou public/)da aplicação*/
-function dir_public()
+/*Retorna o primeiro nome do usuário da sessão atual*/
+function user_first($name=null)
 {
-	$uri = $GLOBALS['np_instance_of_uri'];
-	return is_dir($uri->local("public_html/")) ? "public_html/" : "public/";
+	$name = is_null($name) ? user_name() : $name;
+	if($name)
+	{
+		$name = explode(' ',$name);
+        return $name[0];
+	}
 }
 
 /*Retorna o caminho em URL da imagem do usuário da sessão atual*/
@@ -325,26 +519,30 @@ function user_image($path = null)
 	return false;
 }
 
+/*Retorna o nome do diretório publico (public_html/ ou public/)da aplicação*/
+function dir_public()
+{
+	$uri = $GLOBALS['np_instance_of_uri'];
+	return is_dir($uri->local("public_html/")) ? "public_html/" : "public/";
+}
+
 /*Remove a imagem de usuário da sessão atual*/
 function user_image_remove($path = null)
 {
 	$uri = $GLOBALS['np_instance_of_uri'];
-
 	$path = is_null($path) ? user()->image : $path;
 
 	$image = $uri->local(dir_public() . $path);
+	$public = substr($image,-7,8);
 
-	if (file_exists($image)) {
+	$public_html = substr($image,-12,12);
+	if($public != 'public/' && $public_html != 'public_html/'){
+		if (file_exists($image) && !is_null(user_image())) {
 		if (unlink($image)) return true;
 		else return false;
 	}
 	return false;
-}
-
-/*Retorna o nome da função/tipo do usuário da sessão atual*/
-function user_role()
-{
-	return user()->role;
+	}else return false;
 }
 
 /*Retorna o caminho base da pasta public/public_html do site*/
@@ -353,6 +551,55 @@ function asset($path = null)
 	$uri = $GLOBALS['np_instance_of_uri'];
 	return $uri->asset($path);
 }
+function options_checkbox($name,$items,$checked=false,$class='')
+{
+	$checkbox = null;
+	$checked = $checked ? 'checked="checked"' : null;
+	if(count($items) > 0)
+	{
+		foreach($items as $key=>$val){
+			$checkbox .= "<p><label>
+                          <input type='checkbox' name='{$name}[]' value='{$key}' {$checked}/>
+                          <span>{$val}</span></label></p>";
+		}
+	}
+	return $checkbox;
+}
+
+function options_string($items)
+{
+	$ids = null;
+	if(is_array($items)){
+	if(count($items) > 0)
+	{
+		foreach($items as $key)
+		{
+			$ids .= $key.',';
+		}
+		$ids = trim($ids);
+		$ids = substr($ids,0,-1);
+	}}
+	return $ids;
+}
+
+function options_post($name)
+{
+	if(isset($_POST)){
+	  if(isset($_POST[$name])){
+		   return $_POST[$name];
+	   }	
+	}
+}
+
+function options_get($name)
+{
+	if(isset($_GET)){
+	  if(isset($_GET[$name])){
+		   return $_GET[$name];
+	   }	
+	}
+}
+
 
 /*Transformação um array associativo em options do HTML. O segundo parametro é a chave(ínice do array) do elemento option que está selecionado, retonando assim, um valor já checado.*/
 function options($array = null, $check = null)
@@ -367,6 +614,17 @@ function options($array = null, $check = null)
 	}
 	return $option;
 }
+/*Mapea um array associativo e retonando somente o valor do elemento que teve a sua chave informada na segundo parêmetro*/
+function options_text($array = null, $check = null)
+{
+	$option = null;
+	foreach ($array as $key => $val) {
+		if ($key == $check) {
+			$option = $val;
+		} 
+	}
+	return $option;
+}
 
 /*Retonar somente um índice especifco do array ou o valor da chave informada no caso de não existir o índice no array especificado no segundo parâmetro*/
 function array_one($key, $array)
@@ -378,7 +636,6 @@ function array_one($key, $array)
 /*Retorna uma tradução de um item formatado ou de uma variável. Para que a tradução seja realizada é necessário colocar no inicio da string o :*/
 function text($value = null, $alert = null)
 {
-
 	$instance = $GLOBALS['np_instance_of_translater'];
 
 	if (substr($value, 0, 1) == ':') {
@@ -402,6 +659,10 @@ function text($value = null, $alert = null)
 	return $value;
 }
 
+function lang($lang){
+	return text(':'.$lang);	
+}
+
 /*Similar a text, com a diferença que essa função imprime o valor em tela*/
 function hello($value = null, $alert = null)
 {
@@ -420,13 +681,10 @@ function array_text($array)
 /*Carrega os arquivos de css da aplicação que estão configurados no diretório config/app/hello.json*/
 function style($only = null)
 {
-
 	$instance = $GLOBALS['np_instance_of_json'];
 	$uri = $GLOBALS['np_instance_of_uri'];
 
-
 	$style = is_null($only) ? $instance->val('styles') : [$instance->val('styles', $only)];
-
 	$css = null;
 
 	if (is_array($style)) {
@@ -446,7 +704,7 @@ function style($only = null)
 	return $css;
 }
 
-/* Função para saída do tipo json. Essa função também declara um cabeçalho/header para o browser*/
+/*Função para saída do tipo json. Essa função também declara um cabeçalho/header para o browser*/
 function json($value = null)
 {
 	if (is_numeric($value) || is_string($value)) {
@@ -511,10 +769,27 @@ function str_url($strTitle, $ignorePonto = true)
 	$strTitle = str_ireplace(array("-----", "----", "---", "--"), "-", $strTitle);
 	return $strTitle;
 }
+function to_datetime($string,$final=true){
+	if(strlen($string) == 10)
+	{
+		$final = $final ? '23:59:59' : '00:00:00';
+		$string = $string.' '.$final;
+	}
+	return $string;
+}
+
 
 /*Função para formatar uma saída de acordo com o arquivo de tradução 'app.json'*/
 function format($string, $format)
 {
+	$string = trim($string);
+	$string = $format == 'date' ? substr($string,0,10) : $string;
+	
+	if($format == 'datetime' && strlen($string) == 10)
+	{
+		$string = $string.' 00:00:00';
+	}
+	
 	$instance = $GLOBALS['np_instance_of_translater'];
 	$format = $instance->val('function.format', $format);
 	if ($format) {
@@ -533,9 +808,7 @@ function items_menu($items, $options = null)
 	$class = isset($options['class']) ? $options['class'] : 'np-bar-item np-button';
 	$icon_class = isset($options['icon']) ? $options['icon'] : 'material-icons';
 	$route = isset($options['route']) ? $options['route'] : '';
-	$active = isset($options['active']) ? $options['active'] : 'np-teal np-animate-left';
-	$active = trim($class . ' ' . $active);
-	$div_class = isset($options['div_class']) ? $options['div_class'] : 'np-card np-dropdown-content np-bar-block np-animate-left';
+	
 
 	$menu = null;
 	if (is_array($items)) {
@@ -555,46 +828,39 @@ function items_menu($items, $options = null)
 			$access = isset($item[3]) ? $item[3] : null;
 			if (!is_null($access)) $access = explode(',', $access);
 			$auth = is_array($access) ? Auth::check($access) : true;
+			
+			
+			/*
+			 <li><a href="dashboard-analytics.html"><i class="material-icons">radio_button_unchecked</i><span data-i18n="Analytics">Analytics</span></a></li>
+			*/
+			
 		    if($auth){
+				$link = url($link);
 				if (is_url($link)) {
-					$link = url($link);
-					$menu .= '<a href="' . $link . '" class="' . $active . '"' . $title_link . '>' . $icon . $title . '</a>';
+					$menu .= "<li><a href='{$link}' class='bold'><span data-i18n='Analytics'>{$title}</span></a></li>";
 				} else {
-					
-					$link = url($link);
-					 $menu .= '<a href="' . $link . '" class="' . $class . '"' . $title_link . '>' . $icon . $title . '</a>';
+					$menu .= "<li><a href='{$link}'><span data-i18n='Analytics'>{$title}</span></a></li>";
                   }
 			  
 			  }
 		}
 	}
-	return '<div class="' . $div_class . '">' . $menu . '</div>';
+	return $menu;
 }
 
 /*Função para exibir uma simples lista de menu. Essa função não aceita submenus, mas aceita traduções*/
 function dropdown_menu($item, $options = null)
 {
-
-	$class = isset($options['class']) ? $options['class'] : 'np-button np-bar-item';
-	$icon_class = isset($options['icon']) ? $options['icon'] : 'material-icons';
 	$route = isset($options['route']) ? $options['route'] : '';
-	$active = isset($options['active']) ? $options['active'] : 'np-teal np-animate-left';
-	$active = trim($class . ' ' . $active);
-	$div_class = isset($options['div_class']) ? $options['div_class'] : 'np-dropdown-hover';
 	$itens = isset($options['items']) ? $options['items'] : null;
-
-	$menu = null;
-
-
 	$item = explode('|', $item);
 
 	$link = str_ireplace('.', '/', $item[0]);
 
-	$link = $route . $link;
+	//$link = $route . $link;
 
 	$title = (isset($item[1]) && '!' != $item[1]) ? text($item[1]) : null;
-	$title_link = $title ? ' title="' . $title . '"' : null;
-	$icon = isset($item[2]) ? '<i class="' . $icon_class . '">' . $item[2] . '</i>' : null;
+	$icon = isset($item[2]) ? $item[2] : 'link';
 
 	//Define o nível de acesso
 	$access = isset($item[3]) ? $item[3] : null;
@@ -602,28 +868,36 @@ function dropdown_menu($item, $options = null)
 	$auth = is_array($access) ? Auth::check($access) : true;
 
 	if ($auth) {
+		$link = url($link);
+		$active = null;
 		if (is_url($link, true)) {
-			$link = url($link);
-			$menu .= '<a href="' . $link . '" class="' . $active . '"' . $title_link . '>' . $icon . $title . '</a>';
-		} else {
-			$link = url($link);
-			$menu .= '<a href="' . $link . '" class="' . $class . '"' . $title_link . '>' . $icon . $title . '</a>';
-		}
-		return '<div class="' . $div_class . '">' . $menu . $itens . '</div>';
+			$active = 'active bold';
+		} 
+		return '<li class="'.$active.'"><a class="'.$active.' collapsible-header waves-effect waves-cyan " href="JavaScript:void(0)"><i class="material-icons">'.$icon.'</i><b class="menu-title" data-i18n="Dashboard">'.$title.'</b></a>
+                <div class="collapsible-body">
+                    <ul class="collapsible collapsible-sub" data-collapsible="accordion">'.$itens.'</ul>				
+                </div>
+            </li>';
 	}
 }
 
 function open_menu($title,$icon='link',$color='np-blue'){
-	return '<nav class="np-sidebar np-collapse '.$color.' np-animate-left np-card  np-sidebar-menu" style="z-index:3;width:300px;" id="mySidebar"><br>
-  <div class="np-bar-block" style="position:relative;top:-25px">
-  <h2 class="np-center np-border-bottom"><i class="material-icons np-xxlarge">'.$icon.'</i>'.$title.'</h2>';
+	$title = explode('|',$title);
+	$home = isset($title[1]) ? url($title[1]) :false;
+	$active = $home && is_url($home, true) ? 'active bold' : null;
+	
+	$title = $home ? "<a href='{$home}' style='margin-top:6px' class='".$active." waves-effect waves-cyan'><i class='material-icons'>{$icon}</i>".text($title[0])."</a>" : text($title[0]); 
+	
+	
+	return '<li class="bold">'.$title.'</li>';
 }
 
 function close_menu(){
-	return ' </div></nav>';
 }
 
 /*Oculta uma parte do texto*/
 function text_more($string,$qtd=150,$more='...'){
 	return (strlen($string) > $qtd) ? substr($string,0,$qtd - 3).$more : $string; 
 }
+
+

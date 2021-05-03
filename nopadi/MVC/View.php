@@ -17,7 +17,7 @@ class View extends Translation
 	/*Caminho dos caches*/
 	protected $cache =  'storage/cache/views';
 	/*regra ER para trasnformação*/
-	private $all =  "([\[\]\t\n\r\f\v\-A-Za-zÀ-ú0-9\s\{\} &,\_\$\.\"\'\:\|\(\)\+\-\*\%\/\!\?\>\<\=@]+)";
+	private $all =  "([\[\]\t\n\r\f\v\-A-Za-zÀ-ú0-9\s\{\} &,\_\$\.\"\'\:\|\(\)\+\-\*\%\/\!\?\>\<\=@#;]+)";
 	/*armazena os dados do scope*/
 	private $scope;
 	/*armazena os comandos de componentização*/
@@ -33,7 +33,6 @@ class View extends Translation
 	/*Método para renderizar o arquivo de visualização*/
 	final public function render($view, $np_scope = null)
 	{
-		
 		if(substr($view,0,1) == '@'){
 			
 			$view = ucfirst(substr($view,1));
@@ -88,7 +87,6 @@ class View extends Translation
 			$msg = $this->text('view.not.found');
 			echo '<span style="font-size:15px;color:white;background-color:red;font-family:verdana,arial;padding:2px"><b>view.not.found</b>|<b>' . $this->path . '/' . $file . '</b>|' . $msg . '</span>';
 		}
-
 	}
 
 	/*cria um arquivo de visualização*/
@@ -230,6 +228,7 @@ class View extends Translation
 			$this->render($component, $scope);
 		}
 	}
+
 
 	/*Transforma tudo em algo legivel para o PHP*/
 	public function transform($content)

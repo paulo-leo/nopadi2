@@ -1,0 +1,35 @@
+@include("@Painel/Views/header")
+{!painel_header('Configurações do banco de dados')!}
+  <div class="form-row">
+	<div class="np-col m6 np-padding-small">
+      <label for="inputVersion">#host#</label>
+      <input type="text" class="np-input np-border-blue" disabled value="{{NP_DB_HOST}}">
+    </div>
+	
+	<div class="np-col m6 np-padding-small">
+      <label>#database#</label>
+      <input type="text" class="np-input np-border-blue" disabled value="{{NP_DB_NAME}}">
+    </div>
+	
+	<div class="np-col m6 np-padding-small">
+      <label>#user#</label>
+      <input type="text" class="np-input np-border-blue" disabled value="{{NP_DB_USER}}">
+    </div>
+	
+	<div class="np-col m6 np-padding-small">
+      <label>#password#</label>
+      <input type="password" class="np-input np-border-blue" disabled value="*********">
+    </div>
+	
+	<div class="np-col m6 np-padding-small">
+      <label>#sgbd#</label>
+      <input type="text" class="np-input np-border-blue" disabled value="{{NP_DB_SGBD}}">
+    </div>
+	
+	<div class="np-col m6 np-padding-small">
+      <label>#pref#</label>
+      <input type="text" class="np-input np-border-blue" disabled value="{{NP_DB_PREF}}">
+    </div>
+  </div>
+
+@include("@Painel/Views/footer")

@@ -1,0 +1,66 @@
+{
+    "CRM": {
+        "name": "CRM",
+        "description": "Gestão de Relacionamento com os clientes.",
+        "author": "Paulo Leonardo",
+        "status": "active",
+        "version": "0.1",
+        "license": "MIT",
+        "require": [
+            "php7"
+        ],
+        "url": "www.onpaulo.com.br",
+        "route": "crm",
+        "parent": "Painel|Painel de Controle",
+        "color": "indigo",
+        "icon": "business"
+    },
+    "Fin": {
+        "name": "Finanças",
+        "description": "Aplicativo para gerenciamento finaceiro.",
+        "author": "Paulo Leonardo | Onpaulo",
+        "status": "active",
+        "version": "0.1",
+        "license": "MIT",
+        "require": [
+            "php7"
+        ],
+        "url": "www.onpaulo.com.br",
+        "route": "fin",
+        "parent": "",
+        "color": "green",
+        "icon": "local_atm"
+    },
+    "Inventory": {
+        "name": "Estoque",
+        "description": "Aplicativo para gerenciamento do estoque.",
+        "author": "Paulo Leonardo | Onpaulo",
+        "status": "active",
+        "version": "0.1",
+        "license": "MIT",
+        "require": [
+            "php7"
+        ],
+        "url": "www.onpaulo.com.br",
+        "route": "inventory",
+        "parent": "Fin|Finanças",
+        "color": "deep-orange",
+        "icon": "inventory_2"
+    },
+    "Painel": {
+        "name": "Painel de Controle",
+        "description": "Painel de Controle ou simplesmente painel, é um módio nativo do Onpaulo. Esse módulo permiti gerenciar usuários e sessões, além de poder gerenciar outros módulos de forma intuitiva e simples. ",
+        "author": "Paulo Leonardo",
+        "status": "active",
+        "version": "0.1",
+        "license": "MIT",
+        "require": [
+            "php7"
+        ],
+        "url": "www.onpaulo.com.br",
+        "route": "",
+        "parent": "",
+        "color": "",
+        "icon": ""
+    }
+}

@@ -1,0 +1,44 @@
+@include("@Painel/Views/header")
+{!form_open(':SMTP_server_settings','settings/smtp')!}
+{{csrf_field()}}
+  <div class="form-row">
+    <div class="np-col m12 np-padding-small">
+	  {!form_checkbox('auth',NP_EMAIL_AUTH)!}
+	  <label style="position:relative;top:5px">Usar autenticação SMTP</label>
+    </div>
+	
+	<div class="np-col m2 np-padding-small">
+      <label>#port#</label>
+      <input type="number" name="port" min="0" class="np-input np-border-red" value="{{NP_EMAIL_PORT}}">
+    </div>
+	
+	<div class="np-col m5 np-padding-small">
+      <label>#host#</label>
+      <input type="text" class="np-input np-border-red" name="host" value="{{NP_EMAIL_HOST}}">
+    </div>
+	
+	<div class="np-col m5 np-padding-small">
+      <label>#email#</label>
+      <input type="email" class="np-input np-border-red" name="email"  value="{{NP_EMAIL}}">
+    </div>
+	
+	<div class="np-col m4 np-padding-small">
+      <label>#name#</label>
+      <input type="text" class="np-input np-border-red" name="name" value="{{NP_EMAIL_NAME}}">
+    </div>
+	
+	
+
+	<div class="np-col m4 np-padding-small">
+      <label>Usuário do servidor SMTP</label>
+      <input type="user" class="np-input np-border-red" name="user" value="{{NP_EMAIL_USER}}">
+    </div>
+	
+	<div class="np-col m4 np-padding-small">
+      <label>#password#</label>
+      <input type="password" class="np-input np-border-red" name="pass"  value="{{NP_EMAIL_PASS}}">
+    </div>
+  </div>
+{!form_close()!}
+
+@include("@Painel/Views/footer")

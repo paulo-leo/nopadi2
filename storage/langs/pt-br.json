@@ -1,5 +1,21 @@
 {
     "applications":"Aplicativos",
+	"not_filled":"Não preenchido",
+	"to_view":"Visualizar",
+	"empty":"Vazio",
+	"sector":"Setor",
+	"no_value_found":"Nenhum valor encontrado.",
+	"not_sector":"Não há setor",
+	"general_settings":"Configurações gerais",
+	"description_settings":"Configurações de descrições",  
+    "record_settings":"Configurações de registros",  
+    "stage_settings":"Configurações de estágios",  
+	"other_information":"Outras informações",
+	"mode":"Modo da aplicação",
+	"invalid_password_strong":"<b>Senha inválida</b>: a senha deve ter pelo menos 8 caracteres e deve conter pelo menos uma letra minúscula, uma letra maiúscula e um algarismo.",
+	"you_must_accept_the_terms":"Você deve aceitar os termos",
+	"allow_email_marketing":"Permitir envio de e-mail marketing",
+	"user_add":"Adicionar usuário",
     "trash":"Lixeira",
 	"public.pending":"Publicação pendente",
 	"success":"Sucesso",
@@ -10,7 +26,7 @@
 	"processing":"Processando...",
 	"help":"Ajuda",
 	"surname":"Sobrenome",
-	"i_accept_the_terms":"Aceito os termos de contrato de uso da aplicação",
+	"i_accept_the_terms":"Aceito os termos de uso da aplicação",
 	"register":"Cadastre-se",
 	"support_nopadi":"Suporte do Nopadi",
 	"off":"Desligado",
@@ -128,7 +144,7 @@
 	"pending": "Pendente",
 	"situation":"Situação",
 	"error_server_db":"Erro ao cadastrar usuário no banco de dados",
-	"email_exists":"Já existe um usuário com o mesmo endereço de email cadastrado no sistema.",
+	"email_exists":"Já existe um usuário com o mesmo endereço de e-mail cadastrado no sistema.",
 	"invalid_password":"Senha inválida",
 	"invalid_email":"E-mail inválido",
 	"email_not_found":"Sua pesquisa não retornou nenhum endereço de e-mail válido, tente novamente com outro endereço de e-mail!",
@@ -171,6 +187,7 @@
 	"how_it_works":"Como funciona",
 	"who_we_are":"Quem somos",
 	"password": "Senha",
+	"passwords_do_not_match":"Senhas não conferem",
 	"password.tip":"A senha deve ter no mínimo 6 caracteres.",
 	"next":"Próximo",
 	"previous":"Anterior",
@@ -256,8 +273,8 @@
 	"admin":"Administrador",
 	"demo":"Demonstração",
 	"function.format":{
-	  "datetime":"([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})=$3/$2/$1 às $4h e $5m",
+	  "datetime":"([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})=$3/$2/$1 às $4h$5min",
 	  "date":"([0-9]{4})-([0-9]{2})-([0-9]{2})=$3/$2/$1",
-	  "time":"([0-9]{2}):([0-9]{2}):([0-9]{2})=$1h$2m"
+	  "time":"([0-9]{2}):([0-9]{2}):([0-9]{2})=$1h$2min"
 	}
 }

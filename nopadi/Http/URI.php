@@ -45,14 +45,13 @@ class URI
 	 */
 	protected function Protocolo()
 	{
-		/**
-		 * Faz a verificação se for
-		 * diferente de https
-		 */
-		if (strpos(strtolower($_SERVER['SERVER_PROTOCOL']), 'https') === false) {
-			self::$protocolo = 'http://'; //Atribui o valor http
-		} else {
+		$https = ((!empty($_SERVER['HTTPS'])) && ($_SERVER['HTTPS'] != 'off')) ? true : false; 
+		 
+		if ($https) {
 			self::$protocolo = 'https://'; //Atribui o valor https
+			
+		} else {
+			self::$protocolo = 'http://'; //Atribui o valor http
 		}
 
 		/**
@@ -167,7 +166,12 @@ class URI
 
 		if ($this->local == false) {
 			$path = '../' . $path;
+			$path = str_ireplace('../../','../',$path);
+			$path = str_ireplace('../../../','../',$path);
+			$path = str_ireplace('../../../../','../',$path);
 		}
+		
+		
 		return $path;
 	}
 	public function asset($path)

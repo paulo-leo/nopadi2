@@ -4,20 +4,75 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="{{asset('np-ui/np-ui.css')}}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
 <body>
 
-<!-- Header -->
-<div class="np-container np-content np-padding np-card np-animate-top" style="min-height:700px">
-  <div class="np-center">
-  <h2 class="np-animate-bottom"><img style="position:relative;top:15px" class="mb-4" src="{{asset('img/russel-logo-text-v2.png')}}" alt="" width="270" height="90"></h1>
-    <div class="np-padding-32">
-      <h1>Seja bem vindo ao ambiente integrado de informações da Russel Serviços.</div>
-	  <a class="np-btn np-round np-card" href="{{url('login')}}">Iniciar sessão</a>
-    </h2>
+<!-- Navbar (sit on top) -->
+<div class="np-top">
+  <div class="np-bar np-white np-card np-border-bottom np-border-red" id="myNavbar">
+    <a href="#home" class="np-bar-item">
+	<img style="" src="{{asset('img/russel-logo-text-v2.png')}}" alt="" width="80" height="20">
+	</a>
+    <!-- Right-sided navbar links -->
+    <div class="np-right np-hide-small">
+	  <a href="https://mail.zoho.com/zm/#mail/folder/inbox" class="np-bar-item np-button">E-mail Zoho</a>
+	   <a href="http://webmail.empresa.russelservicos.com.br/" class="np-bar-item np-button">E-mail <b>King</b>host</a>
+	  <a href="https://recruit.zoho.com/crm/" class="np-bar-item np-button">CRM</a>
+	  <a href="https://recruit.zoho.com/recruit/" class="np-bar-item np-button">Recruit</a>
+	  <a href="https://erpcloud.nasajon.com.br/" class="np-bar-item np-button">Nasajon</a>
+      <a href="{{url('login')}}" class="np-bar-item np-button np-pale-red np-text-red np-card">Entrar</a>
+    </div>
+    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+    <a href="javascript:void(0)" class="np-bar-item np-button np-right np-hide-large np-hide-medium" onclick="w3_open()">
+      <i class="material-icons">menu</i>
+    </a>
   </div>
 </div>
 
+<!-- Sidebar on small screens when clicking the menu icon -->
+<nav class="np-sidebar np-bar-block np-black np-card np-animate-left np-hide-medium np-hide-large" style="display:none" id="mySidebar">
+  <a href="javascript:void(0)" onclick="w3_close()" class="np-bar-item np-pale-red np-button np-large">#close#</a>
+  <a href="https://mail.zoho.com/zm/#mail/folder/inbox" class="np-bar-item np-button">E-mail Zoho</a>
+	   <a href="http://webmail.empresa.russelservicos.com.br/" class="np-bar-item np-button">E-mail <b>King</b>host</a>
+	  <a href="https://recruit.zoho.com/crm/" class="np-bar-item np-button">CRM</a>
+	  <a href="https://recruit.zoho.com/recruit/" class="np-bar-item np-button">Recruit</a>
+	  <a href="https://erpcloud.nasajon.com.br/" class="np-bar-item np-button">Nasajon</a>
+  <a href="{{url('login')}}" class="np-bar-item np-button">Entrar</a>
+</nav>
+
+<!-- About Section -->
+<div class="np-container np-bg-1" style="padding:128px 16px" id="about">
+  <h3 class="np-center np-jumbo"><img style="" src="{{asset('img/russel-logo-text-v2.png')}}" alt=""></h3>
+  <p class="np-center np-large">{{NP_DESCRIPTION}}</p>
+  <div class="np-row-padding np-center" style="margin-top:64px">
+  </div>
+</div>
+
+
+
+
+<!-- Footer -->
+<footer class="np-center np-black np-padding-64">
+  <p>Powered by <a href="#" target="_blank" class="np-hover-text-green">{{NP_NAME}}</a></p>
+</footer>
+ 
+<script>
+// Toggle between showing and hiding the sidebar when clicking the menu icon
+var mySidebar = document.getElementById("mySidebar");
+
+function w3_open() {
+  if (mySidebar.style.display === 'block') {
+    mySidebar.style.display = 'none';
+  } else {
+    mySidebar.style.display = 'block';
+  }
+}
+
+// Close the sidebar with the close button
+function w3_close() {
+    mySidebar.style.display = "none";
+}
+</script>
 
 </body>
 </html>

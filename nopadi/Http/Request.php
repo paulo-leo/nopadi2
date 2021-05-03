@@ -2,15 +2,20 @@
 
 namespace Nopadi\Http;
 
+use Nopadi\Base\DB;
 use Nopadi\Http\URI;
 
 class Request
 {
 	private $all;
+	private $check;
+	private $values;
 	private $allHeaders;
 
 	public function __construct()
 	{
+	  $this->values = array();
+	  $this->check = 1;
       switch ($_SERVER['REQUEST_METHOD']) 
 	  {
            case 'GET':
@@ -28,6 +33,34 @@ class Request
 		
 		/*Salva todos os headers dentro de um array associativo*/
 		$this->allHeaders = apache_request_headers();	
+	}
+	
+	public function __destruct() {
+         if($this->check == 1){
+			 if (!isset($_SESSION)) session_start();
+	         if(isset($_SESSION['np_errors'])){
+				 unset($_SESSION['np_errors']);
+			 }
+		 }
+    }
+	
+	/*Salva os erros em um array de sessão*/
+	private function setError($name,$message)
+	{
+	  $this->check *= 0; 
+	  if (!isset($_SESSION)) session_start();
+	  $_SESSION['np_errors'][$name] = $message;
+	}
+	/*Retonar true caso não exista nenhum erro*/
+	public function checkError()
+	{
+	  if($this->check == 1) return true; else return false;	  
+	}
+	
+	/*Salva os erros em um array de sessão*/
+	private function getError($name)
+	{
+	  
 	}
 
 	public function route($position = 1)
@@ -116,22 +149,114 @@ class Request
 	{
 		if (array_key_exists($x, $this->all)) {
 			$x = $this->all[$x];
+			$x = htmlentities($x,ENT_COMPAT);
 		} elseif (!is_null($dafault)) {
 			$x = $dafault;
+			$x = htmlentities($x,ENT_COMPAT);
+		}else{
+			$x = null;
 		}
-		return htmlentities($x,ENT_COMPAT);
+		return $x;
 	}
 	
-	public function getInt($x,$dafault=null)
+	private function setValue($name,$value=null)
+	{
+		$this->values[$name] = $value;
+	}
+	
+	
+	public function getValues()
+	{
+		return $this->values;
+	}
+	
+	public function getString($x,$dafault=null,$msg_error=null)
+	{
+		$var = $this->get($x);
+		if(!is_null($dafault))
+		{
+			$dafault = explode(':',$dafault);
+		    $min = intval($dafault[0]);
+		    $max = isset($dafault[1]) ? intval($dafault[1]) : $min;
+			$msg = $min == $max ? "o valor informado deve ter no minimo {$min} caracteres." : "o valor informado deve ter entre {$min} e {$max} caracteres.";
+			
+			if(strlen($var) >= $min && strlen($var) <= $max){
+				$var = (string) $var;
+				$var = substr($var,0,$max);
+				$this->setValue($x,$var);
+				return $var;
+			}else{
+				$msg_error = is_null($msg_error) ? $msg : $msg_error;
+				$this->setError($x,$msg_error);
+			}
+		}else{
+			$this->setValue($x,$var);
+			return $var;  
+		}
+	}
+	
+	public function getUnique($x,$table,$id = null)
+	{
+		$var = trim($this->get($x));
+		if(strlen($var) >= 1)
+		{
+			if(is_array($table)){
+				$values = $table;
+				$table = $table['table'];
+				unset($values['table']);
+			}else{
+			    $values = array($x=>$var);
+			}
+			
+			$table = DB::table($table);
+			$table = $table->exists($values,$id);
+			
+			if($table){
+			  $this->setError($x,"o valor já existe na base de dados.");
+			}else{
+			  $this->setValue($x,$var);	
+			  return $var;
+			}
+		}else{
+			$this->setError($x,"o valor não pode ser vazio.");
+		}
+	}
+
+	public function getInt($x,$dafault=null,$msg_error=null)
 	{
 		$var = $this->get($x,$dafault);
-		if(is_numeric($var)) return (int) $var; 
+		$var = str_ireplace(['/','.','-',',','_','(',')','*',' '],'',$var);
+		
+		if(is_numeric($var)){
+			$var = (int) $var;
+			$this->setValue($x,$var);
+			return $var; 
+		}else{
+		  $msg_error = is_null($msg_error) ? 'o valor informado deve ser um valor inteiro': $msg_error;
+		  $this->setError($x,$msg_error);
+		} 
+	}
+	
+	public function getAny($x,$dafault=null)
+	{
+		$var = $this->get($x,$dafault);
+		if(!is_null($var)){
+			$this->setValue($x,$var);
+			return $var; 
+		}
 	}
 	
 	public function getFloat($x,$dafault=null)
 	{
 		$var = $this->get($x,$dafault);
-		if(is_numeric($var)) return (float) $var; 
+		if(is_numeric($var))
+		{
+			$var = (float) $var;
+			$this->setValue($x,$var);
+			return $var; 
+		}else{
+			$this->setError($x,'o valor informado deve ser um float.');	
+	   }
 	}
 	
 	public function getDate($x,$dafault=null)
@@ -140,7 +265,13 @@ class Request
 	    $sub = "/([0-9]{2})\/([0-9]{2})\/([0-9]{4})/i";
         $var = preg_replace($sub, "$3-$2-$1", $var);
 		$er = "([0-9]{4})-([0-9]{2})-([0-9]{2})";
-		if(preg_match("/^{$er}/i",$var)) return substr($var,0,10); 
+		if(preg_match("/^{$er}/i",$var)){
+			$var = substr($var,0,10);
+			$this->setValue($x,$var);
+			return $var;
+		}else{
+			$this->setError($x,'o valor informado deve ser uma data.');	
+		}  
 	}
 	
 	public function getTime($x,$dafault=null)
@@ -150,7 +281,12 @@ class Request
 		$var = strlen($var) == 5 ? $var.":00" : $var;
 		
 		$er = "([0-9]{2}):([0-9]{2}):([0-9]{2})";
-		if(preg_match("/^{$er}/i",$var)) return $var; 
+		if(preg_match("/^{$er}/i",$var)){
+			 $this->setValue($x,$var);
+			 return $var; 
+		}else{
+			$this->setError($x,'o valor informado deve ser uma hora.');	
+		}
 	}
 	
 	public function getDatetime($x,$dafault=null)
@@ -161,22 +297,80 @@ class Request
 	    $sub = "/([0-9]{2})\/([0-9]{2})\/([0-9]{4}) ([0-9]{2}):([0-9]{2}):([0-9]{2})/i";
         $var = preg_replace($sub, "$3-$2-$1 $4:$5:$6", $var);
 		$er = "([0-9]{4})-([0-9]{2})-([0-9]{2}) ([0-9]{2}):([0-9]{2}):([0-9]{2})";
-		if(preg_match("/^{$er}/i",$var)) return $var; 
+		if(preg_match("/^{$er}/i",$var)){
+			$this->setValue($x,$var);
+			return $var; 
+		}else{
+			$this->setError($x,'o valor informado deve ser uma data e hora.');	
+		} 
+	}
+	
+	public function getBit($x,$dafault=null)
+	{
+		$dafault = ($dafault == true || $dafault == 'on') ? 'on' : 'off';
+	    $on = $this->get($x,$dafault);
+		$var = ($on == 'on') ? 1 : 0;
+		$this->setValue($x,$var);
+		return $var;
+	}
+	
+	public function getOn($x,$dafault=null)
+	{
+		$dafault = ($dafault == true || $dafault == 'on') ? 'on' : 'off';
+	    $on = $this->get($x,$dafault);
+		$var = ($on == 'on') ? 'on' : 'off';
+		$this->setValue($x,$var);
+		return $var;
+	}
+
+	public function getMoney($x,$dafault=null)
+	{
+      $money = $this->get($x,$dafault);
+      $money = str_ireplace(['R','$','€',',',' '],['','','','.',''],$money);
+   
+      $p1 = substr($money,-3,1);
+      $c1 = substr($money,-2,2);
+      $p2 = substr($money,-2,1);
+      $c2 = substr($money,-1,1);
+   
+     $money = str_ireplace('.','',$money);
+
+   if($p1 == '.'){
+	   $c = $c1; 
+	   $money = substr($money,0,-2);
+   }elseif($p2 == '.'){
+	   $c = $c2.'0'; 
+	   $money = substr($money,0,-1);
+   }else{ $c = '00'; };
+   
+      $money .= '.'.$c;
+      $money =  is_numeric($money) ? (float) $money : null;
+	  if($money){
+		  $this->setValue($x,$money);
+		  return $money;
+	  }else{
+		 $this->setError($x,'o valor informado deve ser moeda.'); 
+	  }
 	}
 	
 	public function getEmail($x,$dafault='false')
 	{
         $var = strtolower($this->get($x,$dafault));
 		if(filter_var($var, FILTER_VALIDATE_EMAIL)){
+			$this->setValue($x,$var);
 			return $var;
-		}else return false;
+		}else{
+			$this->setError($x,'o valor informado deve ser e-mail.'); 
+			return false;
+		}
 	}
 	
-	public function getBool($x,$dafault='false')
+	public function getBool($x,$dafault=false)
 	{
         $var = strtolower($this->get($x,$dafault));
-		if(($var == 'true') || ($var == '1')){ return 1; }
-		if(($var == 'false') || ($var == '0')){ return 0; }
+		$bool = ($var || $var == 'on' || $var == 1 || $var == '1') ? true : false;
+	    $this->setValue($x,$bool);
+		return $bool;
 	}
 
 	/*define um valor de uma chave informada*/
@@ -315,5 +509,21 @@ class Request
 	public static function gets()
 	{
 		return new Request();
+	}
+	
+	public static function isMethod($method='get')
+	{
+		$method_server = strtoupper($_SERVER['REQUEST_METHOD']);
+		$method = trim(strtoupper($method));
+		return ($method == $method_server) ? true : false;
+	}
+	
+	public static function getMethod()
+	{
+		return strtoupper($_SERVER['REQUEST_METHOD']);
+	}
+	public static function getAll()
+	{
+		return self::gets()->all();
 	}
 }

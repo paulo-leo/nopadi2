@@ -1,0 +1,7 @@
+{
+  "executive":{
+    "users":"crud",
+	"json":"r",
+	"access.description":"Este usuário será capz de gerenciar os demais usuários"
+  }
+}

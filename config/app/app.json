@@ -1,16 +1,20 @@
 {
-    "name":"Russel Serviços",
-    "description": "O maior portal de mão de obras do Brasil.",
-    "author":"Paulo Leonardo",
+    "name": "Russel Serviços",
+    "description": "O maior site de mão de obras do Brasil.",
+    "url": "nopadi.com",
+    "author": "Paulo Leonardo",
     "status": "dev",
-	"mode": "dev",
-	"version": "0.1",
-	"url": "nopadi.com",
-	"logs": "on",
+    "mode": "dev",
+    "version": "0.1",
+    "logs": "on",
     "timezone": "America/Sao_Paulo",
     "lang": "pt-br",
-	"charset":"utf-8",
-	"max_execution":"120"
+    "charset": "utf-8",
+    "max_execution": "",
+    "new_members": "on",
+    "accept_terms": "on",
+    "strong_password": "on",
+    "member_privacy": "public",
+    "new_member_default": "subscriber",
+    "key_api": "4abac02213fa2e54d31904512fddba5e"
 }
-
-

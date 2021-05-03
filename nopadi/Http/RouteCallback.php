@@ -27,7 +27,7 @@ class RouteCallback
 	{	
 		if(is_callable($callback) && ServiceProvider::execute())
 		{
-			return call_user_func_array($callback, array_values($params));
+			echo call_user_func_array($callback, array_values($params));
 			
 		} elseif (is_string($callback) && ServiceProvider::execute()) {
 			
@@ -35,13 +35,19 @@ class RouteCallback
 				$callback = explode('@', $callback);
 
 				$controller = $namespace.$callback[0];
+				
+				$controller_e = explode('\\',$controller);
+				$controller_i = null;
+				foreach($controller_e as $controller_id){  $controller_i .= ucfirst($controller_id).'\\'; }
+				$controller = substr($controller_i,0,-1);
+
 				$method = $callback[1];
 
 				$rc = new \ReflectionClass($controller);
 
 				if($rc->isInstantiable() && $rc->hasMethod($method))
 				{
-					return call_user_func_array(array(new $controller, $method), array_values($params));
+					echo call_user_func_array(array(new $controller, $method), array_values($params));
 					
 				} else {
 

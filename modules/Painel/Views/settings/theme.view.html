@@ -1,0 +1,46 @@
+@include("@Painel/Views/header")
+{!form_open('Tema da aplicação','settings/theme')!}
+{{csrf_field()}}
+  <div class="form-row">
+    <?php
+	  $themes = array(
+	   'black'=>'Preto',
+	   'white'=>'Branco',
+	   'pink'=>'Rosa',
+	   'green'=>'Verde',
+	   'lime'=>'Limão',
+	   'yellow'=>'Amarelo',
+	   'orange'=>'Laranja',
+	   'blue'=>'Azul',
+	   'red'=>'Vermelho',
+	   'indigo'=>'Indigo'
+	  );
+	?>
+    <div class="np-col m6 np-padding-small">
+	<select name="theme" class="np-select">
+	  {!options($themes,NP_NEW_MEMBER_DEFAULT)!}
+	</select>
+    </div>
+	
+  </div>
+{!form_close()!}
+
+<script>
+$(function(){
+
+  var select = $("select[name=theme] > option");
+  var themeHere = "np-"+"{{theme()}}";
+  
+  select.click(function(){
+     var value = $(this).attr('value');
+	 var style = $("#np-main-menu-top"); 
+	 var classHere = "np-"+value;
+	 style.removeClass(themeHere);
+	 style.addClass(classHere);
+	 themeHere = classHere;
+  });
+  
+});
+</script>
+
+@include("@Painel/Views/footer")

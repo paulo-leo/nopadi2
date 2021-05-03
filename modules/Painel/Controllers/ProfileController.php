@@ -22,12 +22,35 @@ class ProfileController extends Controller
 		  
 	   $langOptions = options($this->users()->langs(),$find->lang);
 	   
-       view('@Painel/Views/users/profile',[
+       return view('@Painel/Views/users/profile',[
 	       'page_title'=>text(':user.edit'),
 	       'find'=>$find,
 		   'langOptions'=>$langOptions]);
 	   
-	   }else view('404');
+	   }else return view('404');
+
+   }
+   
+   public function profileUpdate()
+   {
+      //Busca pelo usuário por meio do ID
+	  $request = new Request();
+	   
+	   $id = $request->get('id');
+	   $name = $request->get('name');
+	   $lang = $request->get('lang');
+	   $values = array(
+	     'lang'=>$lang,
+		 'name'=>$name
+	   );
+	   
+	   $query = UserModel::model()->update($values,$id);
+	   
+	   if($query){
+		   user_set('lang',$lang);
+		   user_set('name',$name);
+		   hello(':user.update.success','success');
+	   }else hello(':user.update.error','danger');
 
    }
    
@@ -38,7 +61,14 @@ class ProfileController extends Controller
 		   $pass = $request->get('password');
 		   $pass1 = $request->get('password-1');
 		   $pass2 = $request->get('password-2');
+		   $password = true;
 
+           if(NP_STRONG_PASSWORD == 'on')
+		   {
+			 $password = preg_match('/^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/',$pass1) ? true : false;
+		   }
+
+           if($password){
 		   if(Auth::checkPassword($pass,user_id())){
 			  if($pass1 == $pass2 && strlen($pass1) > 5){
 			  if($pass1 != $pass){
@@ -49,25 +79,36 @@ class ProfileController extends Controller
 			  
 		     }else hello(':passwords_do_not_match','danger');
 		  }else hello(':invalid_password','danger'); 
+		   }else{
+			   hello(':invalid_password_strong','danger'); 
+		   } 
+   }
+   public function removeImage(){
+	   
+	   $id = user_id();
+	   if(user_image_remove()){
+			 Auth::setSession('image',null);
+		     Auth::imageUpdate(null,$id);
+			 hello(alert(':remove_profile_picture_success','success'));
+			
+		} else hello(alert(':remove_profile_picture_error','danger'));
+	   
    }
    
    /*Salva uma imagem de perfil*/
    public function updateAvatar()
-   {
+   { 
    //id do usuário
 	$id = user_id();
 
-	$remove = new Request();
-	$remove = $remove->get('remove-image');
 	
-	if(!$remove){
     //Opções de criação da imagem
 	$options = array(
 	    'folder'=>'uploads/avatar/',
 		'name'=>'userfile',
 		'new_name'=>$id,
-		'height'=>150,
-		'width'=>150);
+		'height'=>120,
+		'width'=>120);
 
 	 $file = new  UploadImage($options);
 	 $save = $file->save();
@@ -86,15 +127,6 @@ class ProfileController extends Controller
 	 }else{
 		 hello($message,'danger');
 	 }
-	}else{
-		if(user_image_remove()){
-			 Auth::setSession('image',null);
-		     Auth::imageUpdate(null,$id);
-			 hello(text(':remove_profile_picture_success'),'success');
-			
-		} else hello(':remove_profile_picture_error','danger');
-	}
-   
    }
 
    /*Cria uma instancia da classe de usuários*/

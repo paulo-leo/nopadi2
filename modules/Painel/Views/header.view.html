@@ -1,195 +1,162 @@
 <?php if(!auth()) to_url('login'); ?>
 <!DOCTYPE html>
-<html>
-<title>{{NP_NAME}}</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="shortcut icon" href="{{asset('favicon.png')}}" />
-<link rel="stylesheet" href="{{asset('np-ui/np-ui.css')}}">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<script src="{{asset('js/jquery.min.js')}}"></script>
-<script src="{{asset('js/Chart.min.js')}}"></script>
-<body class="np-light-grey">
-<script>
-$(document).ready(function() {
-      $('.np-btn-toggle-menu').click(function(){
-	      $('.np-sidebar-menu').toggle();
-	  });
-});
-</script>
-<!-- Top container -->
-<div class="np-progress np-black" id="np-top-loading" style="height:6px;z-index:5;position:fixed;top:-9px;display:none;">
-         <div class="np-indeterminate np-red"></div>
-</div>
-<div class="np-bar np-top np-black np-large" style="z-index:4" id="np-main-menu-top"> 
-   <button  id="myOverlay" class="np-hide-large np-bar-item np-button np-red np-hover-none np-hover-text-light-grey np-btn-toggle-menu"><i class="material-icons">menu</i></button>
-   <span class="np-bar-item np-left"><a style="padding:2px" href="{{url('dashboard')}}" class="np-button">{{NP_NAME}}</a></span>
-      <div class="np-right">
-	   <a href="#" onclick="document.getElementById('np-id-modal-apps').style.display='block'" class="np-bar-item"><i class="material-icons np-hover-text-green">apps</i></a>
-	    <a onclick="w3_openN()" class="np-bar-item np-link np_notification_btn"><div style="position:relative;top:1px;left:15px;height:0px" class="np-link np_notification_total"></div><i class="material-icons np-hover-text-green">notifications_none</i></a>
-	    <a onclick="w3_openU()" class="np-bar-item np-link"><i class="material-icons np-hover-text-green">account_circle</i></a>
-	  </div>
-</div>
+<html class="loading" lang="{{NP_LANG}}" data-textdirection="ltr">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta name="description" content="Materialize is a Material Design Admin Template,It's modern, responsive and based on Material Design by Google.">
+    <meta name="keywords" content="materialize, admin template, dashboard template, flat admin template, responsive admin template, eCommerce dashboard, analytic dashboard">
+    <meta name="author" content="ThemeSelect">
+    <title>{{NP_NAME}}</title>
+    <link rel="apple-touch-icon" href="{{asset()}}/app/images/favicon/apple-touch-icon-152x152.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset()}}/favicon.png">
+    <link href="{{asset()}}/app/fonts/material-design-icons/icon.css" rel="stylesheet">
+    <!-- BEGIN: VENDOR CSS-->
+    <link rel="stylesheet" href="{{asset()}}/app/vendors/select2/select2.min.css" type="text/css">
+    <link rel="stylesheet" href="{{asset()}}/app/vendors/select2/select2-materialize.css" type="text/css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/vendors/vendors.min.css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/vendors/animate-css/animate.css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/vendors/chartist-js/chartist.min.css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/vendors/chartist-js/chartist-plugin-tooltip.css">
+	<link rel="stylesheet" type="text/css" href="{{asset()}}/app/vendors/sweetalert/sweetalert.css">
+    <!-- END: VENDOR CSS-->
+    <!-- BEGIN: Page Level CSS-->
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/themes/vertical-menu-nav-dark-template/materialize.css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/themes/vertical-gradient-menu-template/style.css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/pages/dashboard-modern.css">
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/pages/intro.css">
+    <!-- END: Page Level CSS-->
+    <!-- BEGIN: Custom CSS-->
+    <link rel="stylesheet" type="text/css" href="{{asset()}}/app/css/custom/custom.css">
+    <script src="{{asset('js/jquery.min.js')}}"></script>
+	<script src="{{asset()}}/app/vendors/sweetalert/sweetalert.min.js"></script>
+    <!-- END: Custom CSS-->
+</head>
+<!-- END: Head-->
 
+<body class="vertical-layout page-header-light vertical-menu-collapsible vertical-menu-nav-dark preload-transitions 2-columns" data-open="click" data-menu="vertical-menu-nav-dark" data-col="2-columns">
 
-
-<!-- Sidebar/menu -->
-<?php 
-   $np_painel_margin = null;
-   $route_app = route_first();
-   $route_app_itens = array(
-    'settings',
-	'users',
-	'profile',
-	'dashboard'
-   );
-    if(!in_array($route_app,$route_app_itens))
-	{
-       $np_painel_margin = 'margin-left:300px;';
-	   view('@'.ucfirst($route_app).'/sidebar');   
-   }
-?>
-
-<div class="np-sidebar np-bar-block np-card np-animate-right" style="display:none;width:300px;right:0;top:0;z-index:4" id="mySidebarU">
-  <button class="np-bar-item np-red np-button"
-  onclick="w3_closeU()"><i class="material-icons">close</i>#close#</button>
-  <div class="np-padding-small">
-  <div class="np-circle np-center np-card np-gray" style="margin:0 auto; width:50px;height:50px">
-	</div>
-	<a href="{{url('profile')}}" class="np-bar-item np-link np-large np-hover-text-blue"><i class="material-icons np-text-orange">account_circle</i>{{user_name()}}</a>
-	<a href="{{url('settings')}}" class="np-bar-item np-link np-hover-text-blue"><i class="material-icons np-text-green np-spin">settings</i>#settings#</a>
+    <!-- BEGIN: Header-->
+    <header class="page-topbar" id="header">
+        <div class="navbar navbar-fixed">
+            <nav class="navbar-main navbar-color nav-collapsible sideNav-lock navbar-dark indigo accent-2">
+                <div class="nav-wrapper">
+                    <div class="header-search-wrapper hide-on-med-and-down"><i class="material-icons">search</i>
+                        <input class="header-search-input z-depth-2" type="text" name="Search" placeholder="#search#" data-search="template-list">
+                        <ul class="search-list collection display-none"></ul>
+                    </div>
+                    <ul class="navbar-list right">
+                        <li class="hide-on-med-and-down"><a class="waves-effect waves-block waves-light toggle-fullscreen" href="javascript:void(0);"><i class="material-icons">settings_overscan</i></a></li>
+                        <li class="hide-on-large-only search-input-wrapper"><a class="waves-effect waves-block waves-light search-button" href="javascript:void(0);"><i class="material-icons">search</i></a></li>
+                        <li><a class="waves-effect waves-block waves-light notification-button" href="javascript:void(0);" data-target="notifications-dropdown"><i class="material-icons">notifications_none<small class="notification-badge green pulse">5</small></i></a></li>
+                        <li><a class="waves-effect waves-block waves-light profile-button" href="javascript:void(0);" data-target="profile-dropdown"><span class="avatar-status avatar-online">
+						
+						<?php
+						    $image = user_image();
+							$image = $image ? $image : asset('favicon.png');;
+						?>
+						<img src="{{$image}}" alt="avatar"><i></i></span></a></li>
+                    </ul>
+                    <!-- translation-button-->
+                    <ul class="dropdown-content" id="translation-dropdown">
+                        <li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="en"><i class="flag-icon flag-icon-gb"></i> English</a></li>
+                        <li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="fr"><i class="flag-icon flag-icon-fr"></i> French</a></li>
+                        <li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="pt"><i class="flag-icon flag-icon-pt"></i> Portuguese</a></li>
+                        <li class="dropdown-item"><a class="grey-text text-darken-1" href="#!" data-language="de"><i class="flag-icon flag-icon-de"></i> German</a></li>
+                    </ul>
+                    <!-- notifications-dropdown-->
+                    <ul class="dropdown-content" id="notifications-dropdown">
+                        <li>
+                            <h6>NOTIFICATIONS<span class="new badge">5</span></h6>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle cyan small">add_shopping_cart</span> A new order has been placed!</a>
+                            <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">2 hours ago</time>
+                        </li>
+                        <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle red small">stars</span> Completed the task</a>
+                            <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">3 days ago</time>
+                        </li>
+                        <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle teal small">settings</span> Settings updated</a>
+                            <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">4 days ago</time>
+                        </li>
+                        <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle deep-orange small">today</span> Director meeting started</a>
+                            <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">6 days ago</time>
+                        </li>
+                        <li><a class="black-text" href="#!"><span class="material-icons icon-bg-circle amber small">trending_up</span> Generate monthly report</a>
+                            <time class="media-meta grey-text darken-2" datetime="2015-06-12T20:50:48+08:00">1 week ago</time>
+                        </li>
+                    </ul>
+                    <!-- profile-dropdown-->
+                    <ul class="dropdown-content" id="profile-dropdown">
+                        <li><a class="grey-text text-darken-1" href="{{url('profile')}}"><i class="material-icons">person_outline</i>#profile#</a></li>
+                        <li><a class="grey-text text-darken-1" href="app-chat.html"><i class="material-icons">chat_bubble_outline</i> Chat</a></li>
+                        <li><a class="grey-text text-darken-1" href="page-faq.html"><i class="material-icons">help_outline</i> Help</a></li>
+                        <li class="divider"></li>
+                        <li><a class="grey-text text-darken-1" href="user-lock-screen.html"><i class="material-icons">lock_outline</i> Lock</a></li>
+                        <li><a class="grey-text text-darken-1" href="{{url('logout')}}"><i class="material-icons">keyboard_tab</i> Sair</a></li>
+                    </ul>
+                </div>
+                <nav class="display-none search-sm">
+                    <div class="nav-wrapper">
+                        <form id="navbarForm">
+                            <div class="input-field search-input-sm">
+                                <input class="search-box-sm mb-0" type="search" required="" id="search" placeholder="Explore Materialize" data-search="template-list">
+                                <label class="label-icon" for="search"><i class="material-icons search-sm-icon">search</i></label><i class="material-icons search-sm-close">close</i>
+                                <ul class="search-list collection search-list-sm display-none"></ul>
+                            </div>
+                        </form>
+                    </div>
+                </nav>
+            </nav>
+        </div>
+    </header>
 	
-	<a class="np-bar-item np-link np-hover-text-blue"><i class="material-icons np-text-indigo">headset_mic</i>#support_nopadi#</a>
-	
-	<a onclick="w3_openM()" class="np-bar-item np-link np-hover-text-blue"><i class="material-icons np-text-red">power_settings_new</i>#go_out#</a>
-	
-	</div>
-</div>
-
-
-<div class="np-sidebar np-bar-block np-card np-animate-top" style="display:none;width:300px;right:0;top:0;z-index:4" id="mySidebarN">
-  <button class="np-bar-item np-red np-button"
-  onclick="w3_closeU()"><i class="material-icons">close</i>#close#</button>
-  
-  <!--
-  <h3 class="np-bar-item np-center np-animate-zoom"><i class="material-icons np-xxlarge">notifications_off</i><br>Não há notificações</h3>
-  -->
-   <ul class="np-ul np_notification_local">
-  </ul>
-  <script>
-    $(function(){
-	   function np_notification_btn()
-	   {
-		   $.ajax({
-			  url:"{{url('notifications/total')}}",
-			  type:"get",
-			  success:function(data){
-			    if(data > 0)
-			    {
-			     $(".np_notification_total").html("<div class='np-animate-zoom np-padding-small np-center np-small np-text-red'>"+data+"</div>");
-				}
-			  },
-			  error:function(){
-			   
-			  }
-			});
-			
-	   }
-	   
-	   function  np_notification_list()
-	   {
-		  $.ajax({
-			  url:"{{url('notifications')}}",
-			  type:"get",
-			  success:function(data){
-			    $(".np_notification_local").html(data);
-			  },
-			  error:function(){
-			   
-			  }
-			});
-	   }
-	   
-	    $(".np_notification_btn").click(function(){
-		   np_notification_list();
-		});
-        np_notification_btn();
-		setInterval(function(){ np_notification_btn(); }, 180000);
-		
-		$(".np_notification_local").on("click",".np_notification_delete",function(){
-		   var id = $(this).attr("id");
-		   var item = $(".np_notification_item-"+id);
-		    $.ajax({
-              url : "{{url('notifications')}}",
-              type : "delete",
-              data : {id:id}});
-		});
-
-	});
-  </script>
-</div>
-
-<!-- Modal sair -->
-<div id="np-modal-confirm-logout" class="np-modal">
-  <div class="np-modal-content np-round np-animate-top" style="max-width:450px">
-    <div class="np-container np-padding-small">
-      <span onclick="document.getElementById('np-modal-confirm-logout').style.display='none'"
-      class="np-button np-display-topright np-round np-small np-padding-small"><i class="material-icons">close</i></span>
-	  <h3>#go_out#</h3>
-      <p>#leave_question#</p>
-	  <a onclick="document.getElementById('np-modal-confirm-logout').style.display='none'" class="np-small np-btn np-border np-border-red np-hover-red np-round">#cancel#</a>
-	  <a href="{{url('logout')}}" class="np-small np-btn np-border np-border-green np-hover-green np-round">#yes#</a>
+	<div class="progress transparent np-progress" style="display:none;height:8px;position:relative;top:-10px">
+      <div class="indeterminate red darken-1"></div>
     </div>
-  </div>
-</div> 
+	
+	
+	
+    <!-- END: Header-->
+  
+    <!-- BEGIN: SideNav-->
+    <aside class="sidenav-main nav-expanded nav-lock nav-collapsible sidenav-light navbar-full sidenav-active-rounded">
+        <div class="brand-sidebar indigo accent-2">
+            <h1 class="logo-wrapper"><a class="brand-logo darken-1" href="{{url('dashboard')}}"><img src="{{asset()}}/app/images/logo/materialize-logo.png" alt="materialize logo" /><span class="logo-text hide-on-med-and-down">Russel</span></a><a class="navbar-toggler" href="#"><i class="material-icons">radio_button_checked</i></a></h1>
+        </div>
+        <ul class="sidenav sidenav-collapsible leftside-navigation collapsible sidenav-fixed menu-shadow" id="slide-out" data-menu="menu-navigation" data-collapsible="menu-accordion">
+		
+		
+	
+		 <!-- Sidebar/menu -->
+         <?php 
+          $np_painel_margin = null;
+          $route_app = route_first();
+          $route_app_itens = array(
+          'settings',
+	      'users',
+	      'profile',
+	      'dashboard'
+         );
+		 
+       if(!in_array($route_app,$route_app_itens))
+	   {
+	     echo view('@'.ucfirst($route_app).'/sidebar'); 
+       }else{
+	     echo view('@Painel/sidebar'); 
+	   }
+       ?>
 
+        </ul>
+        <div class="navigation-background"></div><a class="sidenav-trigger btn-sidenav-toggle btn-floating btn-medium waves-effect waves-light hide-on-large-only" href="#" data-target="slide-out"><i class="material-icons">menu</i></a>
+    </aside>
+    <!-- END: SideNav-->
 
-
-<!-- !PAGE CONTENT! -->
-<div class="np-main" style="{{$np_painel_margin}}margin-top:43px;">
-
-
-<script>
-
-function w3_openU() {
-  document.getElementById("mySidebarU").style.display = "block";
-}
-
-
-function w3_openN() {
-  document.getElementById("mySidebarN").style.display = "block";
-}
-
-function w3_closeU() {
-  document.getElementById("mySidebarU").style.display = "none";
-  document.getElementById("mySidebarN").style.display = "none";
-}
-
-function w3_openM() {
-  document.getElementById("np-modal-confirm-logout").style.display = "block";
-  w3_closeU();
-}
-
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
-
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-    overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
-</script>
+    <!-- BEGIN: Page Main-->
+    <div id="main">
+        <div class="row white" style="min-height:600px">
+            <div class="content-wrapper-before"></div>
+            <div class="col s12">
+                <div class="container">
+                 <!-------Header------->

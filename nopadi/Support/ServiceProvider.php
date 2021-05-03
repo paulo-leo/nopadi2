@@ -24,7 +24,7 @@ class ServiceProvider
 		foreach (self::$block as $id) {
 			$msg .= $id;
 		}
-		echo $msg;
+		hello(alert($msg));
 	}
 	/*Verifica se a execução está bloqueada*/
 	final public static function execute()

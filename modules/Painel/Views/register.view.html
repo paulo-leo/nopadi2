@@ -30,13 +30,13 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 </style>
 <body class="np-light-grey">
 
-     <form class="np-content np-white np-card np-round np-animate-top" id="login" style="max-width:470px;min-height:300px">
+     <form class="np-content np-white np-card np-round np-animate-top" id="login" style="max-width:600px;min-height:300px">
 	 {{csrf_field()}}
 	 <div class="np-progress np-white np-progress-form" style="display:none;height:5px;z-index:5;position:relative;top:0px">
          <div class="np-indeterminate np-green"></div>
      </div>
 	   <div class="np-padding">
-	    <a href="index.html"><h3 class="np-center">{{NP_NAME}}</h3></a>
+	    <a href="{{url()}}"><h3 class="np-center"><img style="position:relative;top:15px" class="mb-4 np-hover-opacity" src="{{asset('img/russel-logo-text-v2.png')}}" alt="" width="250" height="90"></h3></a>
 		<h5 class="np-center">#register#</h5>
 		<div class="local-msg">
 	     @if($logout)
@@ -45,24 +45,27 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 	   </div>
 	    
 		<div class="np-col m6 np-padding">
-           <input class="np-input" name="email" placeholder="#name#" type="text" required>
+           <input class="np-input" name="name" placeholder="#name#" type="text" required>
 		</div>
 		<div class="np-col m6 np-padding">
-          <input class="np-input" name="email" placeholder="#surname#" type="text" required>
+          <input class="np-input" name="surname" placeholder="#surname#" type="text" required>
 		</div>
 		<div class="np-col m12 np-padding">
+		 <label><i class="material-icons">email</i>#email#</label>
          <input class="np-input" name="email" placeholder="#email#" type="email" required>
         </div>
         <div class="np-col m6 np-padding">
-           <input class="np-input" name="password" placeholder="#password#" type="password" required>
+           <input class="np-input" name="password1" placeholder="#password#" type="password" required>
 		</div>
 		<div class="np-col m6 np-padding">
            <input class="np-input" name="password2" placeholder="#confirm_password#" type="password" required>
 		</div>
 		
 		<div class="np-col m12 np-padding">
-		<input type="checkbox" name="remember" value="remember-me">
-        <label for="conect-me">#i_accept_the_terms#</label>
+		<input type="checkbox" name="accept_terms" value="on">
+        <label for="conect-me">#i_accept_the_terms#</label><br>
+		<input type="checkbox" name="email_marketing" value="on">
+        <label for="conect-me">#allow_email_marketing#</label>
 		<button class="np-btn np-border np-margin-top np-hover-green np-border-green np-round np-block">#register#</button>
 		 </div>
 		  
@@ -76,37 +79,49 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 <script>
 $(function(){
 
-  $("#login").submit(function(){
-     var vars = $(this).serialize();
-	 var msg = $(".local-msg");
+
+   var msg = $(".local-msg");
+
+   function login(){
+   
+   
+    var password = $("input[name='password1']").val();
+	var email = $("input[name='email']").val();
+	var token = $("input[name='_token']").val();
      
+	 
      $.ajax({
      url : "{{url('login')}}",
      type : 'post',
-     data : vars,
+     data : {'email':email,'password':password,'_token':token},
      beforeSend : function(){
-	 
            $('.np-progress-form').show();
      },
 	 success : function(data){
 	      if(data == 'success'){
-		     window.location.href = "{{url('applications')}}";
+		     window.location.href = "{{url('dashboard')}}";
+		  }else{ }
+    }});
+     }
+
+
+  $("#login").submit(function(){
+     var vars = $(this).serialize();
+	 
+     
+     $.ajax({
+     url : "{{url('register')}}",
+     type : 'post',
+     data : vars,
+     beforeSend : function(){
+           $('.np-progress-form').show();
+     },
+	 success : function(data){
+	      if(data == 'success'){
+		     login();
 		  }else{
-		    if(data == 'user_not_found'){
-			
-			  msg.html('<div class="np-panel np-pale-red np-leftbar np-border-red">#user_not_found#</div>');
-		         
-			}else if(data == 'invalid_email'){
-			
-			   msg.html('<div class="np-panel np-pale-red np-leftbar np-border-red">#invalid_email#</div>');
-		           
-			}else if(data == 'invalid_password'){
-			   msg.html('<div class="np-panel np-pale-red np-leftbar np-border-red">#invalid_password#</div>');
-			}else{
-			msg.html('<div class="np-panel np-pale-red np-leftbar np-border-red">#server.error#</div>');
-			}
+		    msg.html(data);
 		  }
-		  
 		  $('.np-progress-form').hide();
      }
     }); 

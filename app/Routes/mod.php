@@ -1,13 +1,10 @@
 <?php
 
 use Nopadi\Http\Route;
+use Nopadi\MVC\Module;
 
 /****************************************************************
  ******** Nopadi - Desenvolvimento web progressivo***************
  ***************************************************************/
+Module::start();
 
-Route::module('Painel','Module');
-
-Route::module('CRM');
-Route::module('Fin');
-Route::module('Chart');

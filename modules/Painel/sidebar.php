@@ -1,32 +1,40 @@
 <?php
-/*Menu para arquivos*/
-$menu_sidebar_files = array(
-   'folder/create|Criar pasta|create_new_folder|admin,dev,editor',
-   'images/create|Enviar arquivo|file_upload|admin,dev,editor'
+hello(open_menu('Início|dashboard','home','np-deep-orange'));
+/*Menu para filiasi*/
+$menu_settings = array(
+   'settings/environment|Gerais',
+   'settings/theme|Tema',
+   'settings/sectors|Setorização',
+   'settings/smtp|SMTP|email',
+   'settings/db|Banco de dados',
+   'settings/key-api|Chave de API',
+   'settings/modules|Módulos'
 );
 
-$menu_sidebar_system = array(
-'users.create|:user.create|person_add',
-'settings|:settings|settings'
+
+
+$menu_apps = array(
+   'fin|Finanças',
+   'inventory|Estoque',
+   'crm|CRM'
 );
 
-
-//Menu para arquivos
-hello(dropdown_menu('folder|Arquivos|folder|admin,dev,editor,author,collaborator',
-['items'=>items_menu($menu_sidebar_files)]));
-
-//Menu de usuários do sistema
-hello(dropdown_menu('users|:users|person|admin',
-['items'=>items_menu(['users.create|:user.create|person_add|admin'])]));
-
-//Acesso somente para Ads e Devs
-
-//Menu de configurações do sistema
-$menu_sidebar_settings = array(
-'settings/nwc|NWC|code'
+$menu_users = array(
+   'users|Listar',
+   'users/create|Adicionar'
 );
 
-hello(dropdown_menu('settings|:settings|settings|admin,dev',
-['items'=>items_menu($menu_sidebar_settings)]));
-echo route_first();
+hello(dropdown_menu('users|Usuários|group|admin,dev,editor,author,collaborator',
+['items'=>items_menu($menu_users)]));
+
+hello(dropdown_menu('apps|Aplicativos|widgets|admin,dev,editor,author,collaborator',
+['items'=>items_menu($menu_apps)]));
+
+hello(dropdown_menu('settings|Configurações|settings|admin,dev,editor,author,collaborator',
+['items'=>items_menu($menu_settings )]));
+
+
+
+
+hello(close_menu());
 ?>

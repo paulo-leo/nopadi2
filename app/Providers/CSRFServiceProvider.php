@@ -1,43 +1,51 @@
 <?php
-
 namespace App\Providers;
 
-use Nopadi\Support\ServiceProvider;
 use Nopadi\Http\Auth;
+use Nopadi\Support\ServiceProvider;
 
 class CSRFServiceProvider extends ServiceProvider{
+	
+	private $tokenName = 'np_csrf_token';
+	private $tokenNamePost = '_token';
+	
 	/*Inicia o serviço*/
-	 public function boot(){ 
-
-	  if(!is_api()){
+	 public function boot()
+	 { 
+	   if(!is_api())
+	   {
 		 
-		$this->tokenCreate();
+		 $this->tokenCreate();
 		 //Valida o token no metodo post
-		if($_SERVER['REQUEST_METHOD'] == 'POST'){
+		 if(is_method('post'))
+		 {
 			
-			$token = isset($_POST['_token']) ? $_POST['_token'] : null;
-			$csrf_token = $_SESSION['np_csrf_token'];
+			$token = isset($_POST[$this->tokenNamePost]) ? $_POST[$this->tokenNamePost] : null;
+			$csrf_token = $_SESSION[$this->tokenName];
 			
-			if($token == $csrf_token){
-				   unset($_POST['_token']);
-			}else ServiceProvider::status('token.invalid',text(':invalid_token_csrf'));
-			
-	    }
-		  }
+			if($token == $csrf_token)
+			{
+			    unset($_POST[$this->tokenNamePost]);
+			}else
+			{ 
+			    ServiceProvider::status('token.invalid',text(':invalid_token_csrf'));
+			}
+	     }
+	   }
 	 }
-	 /*gera o token*/
-	 private function tokenCreate(){
+	 /*Gera o token*/
+	 private function tokenCreate()
+	 {
 
-		 $token_name = 'np_csrf_token';
-		 
-		 if(Auth::check()){
-			if(!isset($_SESSION[$token_name]))
-				 $_SESSION[$token_name] = md5(date('Y-m-d-H').Auth::user()->id);
+		   if(Auth::check())
+		   {
+			if(!isset($_SESSION[$this->tokenName]))
+				 $_SESSION[$this->tokenName] = md5(date('Y-m-d-H').Auth::user()->id);
 			
-		   }else{
-			   
-			   if(!isset($_SESSION[$token_name]))
-			     $_SESSION[$token_name] = md5(date('Y-m-d-H')); 
+		   }else
+		   {
+			   if(!isset($_SESSION[$this->tokenName]))
+			     $_SESSION[$this->tokenName] = md5(date('Y-m-d-H')); 
 		    }
 	 }
 }

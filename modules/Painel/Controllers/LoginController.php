@@ -1,11 +1,13 @@
 <?php 
+/*
+Autor: Paulo Leonardo
+*/
 namespace Modules\Painel\Controllers; 
 
 use Nopadi\Http\Auth;
 use Nopadi\Http\Param;
 use Nopadi\Http\Request;
 use Nopadi\MVC\Controller;
-use Nopadi\MVC\Form;
 
 class LoginController extends Controller
 {
@@ -14,27 +16,27 @@ class LoginController extends Controller
    public function showLoginForm()
    {
 	  if(!Auth::check())
-	      view("@Painel/Views/login",['logout'=>false]); 
-	  else to_url('painel');	
+	      return view("@Painel/Views/login",['logout'=>false]); 
+	  else to_url('dashboard');	
    }
    
    /*Faz o login do usuário*/
    public function login()
    {
         Auth::post();
-	    echo Auth::status();
+	    return Auth::status();
    }
    
    /*Desloga o usuário*/
    public function logout()
    {
      if(Auth::destroy())
-	 view("@Painel/Views/login",['logout'=>true]); 
+	 return view("@Painel/Views/login",['logout'=>true]); 
    }
    
    public function teste(){
 	   
-	   view("@Painel/Views/users/form");	   
+	   return view("@Painel/Views/users/form");	   
 	   
     }
 } 

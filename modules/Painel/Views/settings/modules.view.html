@@ -1,0 +1,100 @@
+@painel_header()
+
+<h5>Módulos</h5>
+
+{!$list!}
+
+<div class="fixed-action-btn horizontal">
+    <a class="btn-floating btn-large red">
+      <i class="large material-icons">mode_edit</i>
+    </a>
+    <ul>
+      <li><a title="Registrar módulos" class="btn-floating blue" id="btn-update-new"><i class="material-icons">power</i></a></li>
+      <li><a title="Atualizar todos os módulos" class="btn-floating green darken-1" id="btn-update-all"><i class="material-icons">update</i></a></li>
+    </ul>
+  </div>
+
+<script>
+//settings/modules/update
+$(function(){
+
+  var btn = $("input[name=np-btn-mod-status]");
+  
+ 
+
+  btn.click(function(){
+  
+    var id = $(this).attr("id");
+	
+	var conf = confirm('Você tem certeza que deseja executar essa ação?');
+	
+	
+	
+	
+	
+	if(conf){
+	$.ajax({
+	url:"{{url('settings/modules')}}",
+	data:$(this).serialize(),
+	type:"post",
+	 dataType: "json",
+	data:{'_token':"{{csrf_token()}}",'key':id},
+    beforeSend:function(){
+	  $(".np-progress").show();
+	},
+	success:function(data){
+	   $(".np-progress").hide();
+	    let msg = data.msg;
+		let type = data.type;
+		
+		if(type == "success"){
+		   swal("#success#", msg, "success");
+		}else{
+		   swal("#error#", msg, "error");
+		}
+	   
+	}
+	});
+	}
+	
+  });
+  
+  function type(btnId,type)
+  {
+     $(btnId).click(function(){
+	
+	$.ajax({
+	url:"{{url('settings/modules/update')}}",
+	data:$(this).serialize(),
+	type:"post",
+	 dataType: "json",
+	data:{'_token':"{{csrf_token()}}",'type':type},
+    beforeSend:function(){
+	  $(".np-progress").show();
+	},
+	success:function(data){
+	   $(".np-progress").hide();
+	   
+	   let msg = data.msg;
+		let type = data.type;
+	   
+	   if(type == "success"){
+		   swal("#success#", msg, "success");
+		}else{
+		   swal("#error#", msg, "error");
+		}
+	   
+	}
+	});
+  });
+  }
+  
+ type('#btn-update-all','all');
+ type('#btn-update-new','new');
+  
+});
+
+</script>
+
+
+@include("@Painel/Views/footer")

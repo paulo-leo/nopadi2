@@ -181,10 +181,35 @@ class DB extends Connection
 	}
 	
 	/*retorna todos os registros da tabela*/
-	public function all($filter=null)
+	public function all($filter=null,$or=false)
 	{
+		$op = $or ? 'OR' : 'AND';
+		
+		if(is_array($filter))
+		{
+			$w =null;
+			foreach($filter as $key=>$val)
+			{
+				$val = is_string($val) ? "'{$val}'" : $val;
+				$w .= "$key=$val {$op} ";
+			}
+			$w = trim($w);
+			$w = $or ? substr($w,0,-2) : substr($w,0,-3);
+			$filter = $w;
+		}
+		
+		
 		$sql = is_null($filter) ? 'SELECT * FROM ' . $this->table 
 		: 'SELECT * FROM ' . $this->table.' WHERE '.$filter;
+		
+		return  $this->query($sql);
+	}
+	
+	public function allSearch($input,$value)
+	{
+		
+		$sql = "SELECT * FROM {$this->table} WHERE {$input} LIKE '%{$value}%'";
+
 		return  $this->query($sql);
 	}
 	
@@ -354,6 +379,11 @@ class DB extends Connection
 	{
 		return self::getConn(null);
 	}
+	public static function myQuery($sql, $re = null)
+	{
+		$query = new DB;
+		return $query->query($sql, $re);
+	}
 	/*metodo para executar a query SQL, o segundo parametro é o tipo de retorno da query execultada*/
 	public function query($sql, $re = null)
 	{
@@ -494,17 +524,17 @@ class DB extends Connection
 	/*Metodo para criar botões de paginação*/
 	public function links($config=null){
 		
-		$div_class = isset($config['div_class']) ? $config['div_class'] : 'np-bar np-round-xxlarge np-card';
-		$btn_class = isset($config['btn_class']) ? $config['btn_class'] : 'np-button np-white np-card np-hover-blue np-small';
-		$btn_active_class = isset($config['btn_active_class']) ? $config['btn_active_class'] : 'np-button np-blue np-hover-red np-small';
-		$previous = isset($config['previous_text']) ? $config['previous_text'] : '&#10094;';
-		$next = isset($config['previous_next']) ? $config['previous_next'] : '&#10095;';
+		$div_class = isset($config['div_class']) ? $config['div_class'] : 'pagination';
+		$btn_class = isset($config['btn_class']) ? $config['btn_class'] : 'waves-effect';
+		$btn_active_class = isset($config['btn_active_class']) ? $config['btn_active_class'] : 'active btn';
+		$previous = isset($config['previous_text']) ? $config['previous_text'] : '<i class="material-icons">chevron_left</i>';
+		$next = isset($config['previous_next']) ? $config['previous_next'] : '<i class="material-icons">chevron_right</i>';
 		
 		$links = $this->links;
 		$btns = null;
 		
 		if($links['previous'] || $links['btns'] || $links['next']){
-			$btns .= '<div class="'.$div_class.'">';
+			$btns .= '<ul class="'.$div_class.'">';
 		}
 		
 		if($links['previous']){
@@ -514,41 +544,43 @@ class DB extends Connection
 		if($links['btns']){
 			foreach($links['btns'] as $key=>$val){
 			if($links['page'] != $key){
-				$btns .= '<a class="'.$btn_class.'" href="'.pag_filter($val).'">'.$key.'</a>';
+				$btns .= '<li class="'.$btn_class.'"><a href="'.pag_filter($val).'">'.$key.'</a></li>';
 			}else{
-				$btns .= '<a class="'.$btn_active_class.'" href="'.pag_filter($val).'">'.$key.'</a>';
+				$btns .= '<li class="'.$btn_active_class.'" href="'.pag_filter($val).'">'.$key.'</a></li>';
 			   }
 			}
 		}
 		
 		if($links['next']){
-			$btns .= '<a class="'.$btn_class.'" href="'.pag_filter($links['next']).'">'.$next.'</a>';
+			$btns .= '<li class="'.$btn_class.'"><a href="'.pag_filter($links['next']).'">'.$next.'</a></li>';
 		}
 		
 		if($links['previous'] || $links['btns'] || $links['next']){
-			$btns .= '</div>';
+			$btns .= '</ul>';
 		}
 		
 		return $btns;
 	}
 	
 	//Contagem de registros
-	public function count($key = '*')
+	public function count($key = '*',$where=null)
 	{
+		$where = !is_null($where) ? ' WHERE '.$where : null;
 		$count = $this->mounted();
 		$count = explode('FROM', $count);
-		$count = 'SELECT COUNT(' . $key . ') AS total FROM' . $count[1];
+		$count = 'SELECT COUNT(' . $key . ') AS total FROM' . $count[1].$where;
 		$count = explode('LIMIT', $count);
 		$count = trim($count[0]);
 		$count = $this->query($count, 'OBJ');
 		return (int)$count->total;
 	}
 	//Soma
-	public  function sum($key)
+	public function sum($key,$where=null)
 	{
+		$where = !is_null($where) ? ' WHERE '.$where : null; 
 		$count = $this->mounted();
 		$count = explode('FROM', $count);
-		$count = 'SELECT SUM(' . $key . ') AS total FROM' . $count[1];
+		$count = 'SELECT SUM(' . $key . ') AS total FROM' . $count[1].$where;
 		$count = explode('LIMIT', $count);
 		$count = trim($count[0]);
 		$count = $this->query($count, 'OBJ');
@@ -603,6 +635,7 @@ class DB extends Connection
 		$v = implode(", ", $v);
 		//Monta a query
 		$sql = "INSERT INTO {$table} ({$k}) VALUES ({$v})";
+		
 		//Retornar V ou F 
 		if ($this->execute($sql)) {
 			if ($id) return $this->max($this->primary);

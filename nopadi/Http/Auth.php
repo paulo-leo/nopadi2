@@ -2,6 +2,8 @@
 
 namespace Nopadi\Http;
 
+use Nopadi\FS\Json;
+use Nopadi\Http\Param;
 use App\Models\UserModel;
 use App\Models\TokenModel;
 
@@ -89,6 +91,9 @@ class Auth
 				'lang' => $user['lang'],
 				'email' => $user['email'],
 				'image' => $user['image'],
+				'theme'=>$user['theme'],
+				'timezone'=>$user['timezone'],
+				'sector'=>$user['sector'],
 				'first' => null,
 				'last' => null
 			);
@@ -100,6 +105,9 @@ class Auth
 				'lang' => false,
 				'email' => false,
 				'image' => false,
+				'theme'=>false,
+				'timezone'=>false,
+				'sector'=>false,
 				'first' => false,
 				'last' => false
 			);
@@ -230,6 +238,9 @@ class Auth
 				$email = $user->email;
 				$image = $user->image;
 				$hash = $user->password;
+				$theme = $user->theme;
+				$timezone = $user->timezone;
+				$sector  = $user->sector;
 
 				$passwordCheck = ($loginById == null) ? password_verify($password, $hash) : true;
 
@@ -254,8 +265,10 @@ class Auth
 						'name' => $name,
 						'lang' => $lang,
 						'email' => $email,
-						'image' => $image
-					);
+						'image' => $image,
+						'theme'=>$theme,
+				        'timezone'=>$timezone,
+				        'sector'=>$sector);
 
 					/*inicia uma sesão de usuário logado*/
 					if ($session) {
@@ -336,21 +349,44 @@ class Auth
 		$name = (isset($user['name']) && mb_strlen($user['name']) > 1) ? $user['name'] : false;
 
 		$lang = (isset($user['lang'])) ? $user['lang'] : NP_LANG;
+		$theme = (isset($user['theme'])) ? $user['theme'] : 'black';
+        $accept_terms = (isset($user['accept_terms']) && $user['accept_terms'] == 'on') ? 'on' : 'off';
+		$email_marketing = (isset($user['email_marketing']) && $user['email_marketing'] == 'on') ? 'on' : 'off';
 
-		$password = (isset($user['password']) && mb_strlen($user['password']) >= $minPass) ? $user['password'] : false;
+
+        if(NP_STRONG_PASSWORD == 'on'){
+			$password = preg_match('/^.*(?=.{8,})(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).*$/',$user['password']) ? $user['password'] : false;
+		}else{
+			$password = (isset($user['password']) && mb_strlen($user['password']) >= $minPass) ? $user['password'] : false;
+		}
+		
+		
 		$email = (isset($user['email']) && filter_var($user['email'], FILTER_VALIDATE_EMAIL)) ? $user['email'] : false;
-		$role = (isset($user['role'])) ? $user['role'] : 'admin';
-		if ($name) {
+		$role = (isset($user['role'])) ? $user['role'] : NP_NEW_MEMBER_DEFAULT;
+		
+		if(NP_ACCEPT_TERMS == 'on'){
+			$accept = $accept_terms == 'on' ? true : false;
+		}else{
+			$accept = true;
+		}
+		
+		if($accept){
+		if($name) {
 			if ($email) {
 				if ($password) {
 					$values = array(
 						'role' => $role,
 						'name' => $name,
 						'lang' => $lang,
+					    'theme'=>$theme,
+						'accept_terms'=>$accept_terms,
 						'status' => 'pending',
+						'privacy'=>NP_MEMBER_PRIVACY,
+						'timezone'=>NP_TIMEZONE,
 						'email' => $email,
+						'email_marketing'=>$email_marketing,
 						'password' => self::passwordHash($password),
-						'created_in' => date('Y-m-d H:i:s')
+						'created_in' =>NP_DATETIME
 					);
 
 					if (!UserModel::model()->have('email', $email)) {
@@ -371,7 +407,11 @@ class Auth
 					}
 				} else {
 					/*Senha invalida*/
-					self::$status = 'invalid_password';
+					if(NP_STRONG_PASSWORD == 'on'){
+						self::$status = 'invalid_password_strong';
+					}else{
+						self::$status = 'invalid_password';
+					}
 					return false;
 				}
 			} else {
@@ -384,6 +424,12 @@ class Auth
 			self::$status = 'invalid_name';
 			return false;
 		}
+		}else{
+			/*Você deve aceitar os termos*/
+			self::$status = 'you_must_accept_the_terms';
+			return false;
+		}
+		
 	}
 	/*Gera uma hash da senha*/
 	public static function passwordHash($pass)
@@ -525,5 +571,43 @@ class Auth
 		if (!isset($_SESSION[$name]) && !is_array($_SESSION[$name])) $_SESSION[$name] = array();
 
 		$_SESSION[$name][$key] = $value;
+	}
+	/*verifica se o usuário tem autorização para ação de acordo com sua função ou setor*/
+	public static function sector(){
+		$sector = false;
+		$json = new Json('config/access/access.json');
+		$sectors = $json->gets();
+        $uri = new URI;
+		if(self::check(['admin','dev'])){
+			$sector = true;
+		}else{
+		if(self::check()){
+			$sector = self::user()->sector;
+			if($json->exists_key($sector)){
+				$route = Param::route();
+				$sector = $json->get($sector);
+				$sector = array_key_exists($route,$sector);
+			}else{
+				$sector = false;
+			}
+		  }
+		}
+		return $sector;
+	}
+	
+	public static function checkSector($value)
+	{
+		$ok = false;
+		if(self::check(['admin','dev'])){
+			$ok = true;
+		}else{
+			if(self::check())
+			{
+				$sector = self::user()->sector;
+				$value = is_array($value) ? $value : array(0=>$value);
+				$ok = in_array($sector,$value);
+			}
+		}
+		return $ok;
 	}
 }

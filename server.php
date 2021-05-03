@@ -18,8 +18,14 @@ define('NP_AUTHOR',$app->get('author'));
 define('NP_LANG',$app->get('lang'));
 define('NP_STATUS',$app->get('status'));
 define('NP_MODE',$app->get('mode'));
-define('NP_LOGS',$app->get('logs'));
+define('NP_LOGS',$app->get('logs')); 
+define('NP_MEMBER_PRIVACY',$app->get('member_privacy')); 
+define('NP_NEW_MEMBERS',$app->get('new_members'));
+define('NP_STRONG_PASSWORD',$app->get('strong_password'));
+define('NP_ACCEPT_TERMS',$app->get('accept_terms'));
+define('NP_NEW_MEMBER_DEFAULT',$app->get('new_member_default'));
 define('NP_CHARSET',$app->get('charset'));
+define('NP_KEY_API',$app->get('key_api'));
 define('NP_MAX_EXECUTION',$app->get('max_execution'));
 
 define('NP_DATETIME',date('Y-m-d H:i:s'));
@@ -34,6 +40,11 @@ switch(NP_MODE){
 	default : $db_php = 'config/database/database.php';
 	
 }
+
+
+/*Tema da aplicação*/
+$theme = new Json('config/app/theme.json');
+define('NP_THEME',$theme->get('theme'));
 
 /*Variaveis da base de dados*/
 $db = new ReadArray($db_php);

@@ -1,6 +1,7 @@
 <?php 
 namespace Modules\Painel\Controllers; 
 
+use Nopadi\FS\Json;
 use Nopadi\Http\Auth;
 use Nopadi\Http\Param;
 use Nopadi\Http\Request;
@@ -9,6 +10,11 @@ use Modules\Painel\Models\UserModel;
 
 class UserController extends Controller
 {
+	public static function mask($key){
+		
+		return 'teste';
+		
+	}
    /*Exibe todos os usuários por meio da paginação*/
    public function index()
    {  
@@ -21,18 +27,36 @@ class UserController extends Controller
 	  
 	  $list = UserModel::model()
 	      ->orderBy('id desc')
-	      ->paginate(12,true); 
+	      ->paginate(10,true); 
 	   
 
-     view('@Painel/Views/users/index',[
+     return view('@Painel/Views/users/index',[
 	             'page_title'=>text(':users'),
 	             'list'=>$list,
 				 'rolesOptions'=>options($this->roles(),$role),
 				 'statusOptions'=>options($this->status(),$status)
 				 ]);	
-	 }else view('401');
+	 }else return view('401');
 	
     }
+	
+	/*Retonar os setores cadastrados*/
+	public function sector()
+	{
+		$json = new Json('config/access/sector.json');
+		$sector = $json->gets();
+		
+		$array = array();
+		if(count($sector) >= 1){
+		foreach($sector as $key=>$val)
+		{
+			$array[$key] = text($val['name']);
+		}
+		}else{
+			$array[''] = text(':not_sector');
+		}
+		return $array;
+	}
 	
     /*Retonar o tipo ou função do usuário*/
    public function roles($name=null)
@@ -86,15 +110,16 @@ class UserController extends Controller
 	   $statusOptions = options($this->status(),$find->status);
 	   $langOptions = options($this->langs(),$find->lang);
 	   
-       view('@Painel/Views/users/edit',[
+       return view('@Painel/Views/users/edit',[
 	       'page_title'=>text(':user.edit'),
 	       'find'=>$find,
 		   'statusOptions'=>$statusOptions,
 		   'langOptions'=>$langOptions,
+		   'sectorOptions'=>$this->sector(),
 		   'roleOptions'=>$roleOptions]);
 	   
-	  }else view('@Painel/Views/404');
-	   }else view('@Painel/Views/404');
+	  }else return view('@Painel/Views/404');
+	   }else return view('@Painel/Views/404');
    }
    
 	/*Exibe o fomulário para criar um usuário*/
@@ -105,11 +130,11 @@ class UserController extends Controller
 	  $roleOptions = $this->roles();
 	  $langOptions = $this->langs();
 
-       view('@Painel/Views/users/create',[
+       return view('@Painel/Views/users/create',[
 	   'page_title'=>text(':user.create'),
 	   'langOptions'=>$langOptions,
 	'roleOptions'=>$roleOptions]);
-	}else view('dashboard/401');
+	}else return view('dashboard/401');
 	   
    }
    
@@ -190,6 +215,14 @@ class UserController extends Controller
 	   }else{
 		   hello('Não foi encontrado nenhum usuário','danger');
 	   } 
+   }
+   public function records()
+   {  
+	    $list = UserModel::model()
+	    ->orderBy('id desc')
+	    ->paginate(10); 
+	
+	     return json($list);
    }
 } 
 

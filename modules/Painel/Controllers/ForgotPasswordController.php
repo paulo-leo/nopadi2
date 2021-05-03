@@ -13,7 +13,7 @@ class ForgotPasswordController extends Controller
    /*Valida o token para alteração da senha*/
    public function showLinkRequestForm()
    {
-       view("@Painel/Views/reset");
+       return view("@Painel/Views/reset");
    } 
    
    /*Gera o token do usuário e o envia para o e-mail correspondente*/
@@ -65,7 +65,7 @@ class ForgotPasswordController extends Controller
 	   $token = Param::get('token');
        $token = Auth::checkToken($token);
 	
-	   view("@Painel/Views/reset-form",['token'=>$token]);
+	   return view("@Painel/Views/reset-form",['token'=>$token]);
 	   
 	}
 	

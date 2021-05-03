@@ -74,20 +74,15 @@ class Route extends RouteCollection
             $route = $base.$route;
         }
 
-    
-    
         /*garante que type está dentro do contexto*/
         $type= strtoupper($type);
-        $type = (($type == 'POST') || ($type == 'PUT') || ($type == 'DELETE')) ? $type : 'GET';
+        $type = (($type == 'POST') || ($type == 'PUT') || ($type == 'DELETE') || ($type == 'PATCH')) ? $type : 'GET';
         $args = array(
          'callback'=>$callback,
          'middleware'=>$middleware,
          'namespace'=>$namespace,
          'params'=>$params);
-    
-  
-
-     
+   
         self::add($type, $route, $args);
     }
 	
@@ -113,6 +108,35 @@ class Route extends RouteCollection
     public static function get($route, $callback, $args=null)
     {
         self::create('GET', $route, $callback, $args);
+    }
+	
+	/*Cria uma rota com o verbo PATCH*/
+    public static function patch($route, $callback, $args=null)
+    {
+        self::create('PATCH', $route, $callback, $args);
+    }
+	/*CONNECT*/
+	public static function connect($route, $callback, $args=null)
+    {
+        self::create('CONNECT', $route, $callback, $args);
+    }
+	
+	/*TRACE*/
+	public static function trace($route, $callback, $args=null)
+    {
+        self::create('TRACE', $route, $callback, $args);
+    }
+	
+	/*HEAD*/
+	public static function head($route, $callback, $args=null)
+    {
+        self::create('HEAD', $route, $callback, $args);
+    }
+	
+	/*OPTIONS*/
+	public static function options($route, $callback, $args=null)
+    {
+        self::create('OPTIONS', $route, $callback, $args);
     }
 	
     /*Cria uma rota com o verbo POST*/
@@ -148,13 +172,18 @@ class Route extends RouteCollection
 	   /*Rota especifica para exibir todos os recursos*/
        self::get($route, $callback.'@index', $args);
 		
-	   $last = Param::last();
-	   $Http_system = ['create','help','search','profile','total','filter'];
+	   $id = Param::lastInt();
 	   
-	   if(!in_array($last,$Http_system)){
-		 self::get($route.'/{id}', $callback.'@show', $args);  
+	   if($id){ self::get($route.'/{id}', $callback.'@show', $args); 
 	   }else{
+		 /*Rota especifica para exibir todos os registros no formato JSON*/
+         self::get($route.'/records', $callback.'@records', $args);
+		 /*Rota especifica para exibir um registro no formato JSON*/
+		 self::get($route.'/record', $callback.'@record', $args);
+		 self::get($route.'/record/{$id}', $callback.'@record', $args);
   
+        /*Rota especifica para exibir uma página inicial*/
+         self::get($route.'/home', $callback.'@home', $args);
 	    /*Rota especifica para exibir um formulário para criar um recurso*/
          self::get($route.'/create', $callback.'@create', $args);
 		 /*Rota para exibir o total de registros*/
@@ -210,14 +239,15 @@ class Route extends RouteCollection
             $route  =  (isset($key[1])) ? $key[1] : $key[0];
             $controller = $class.'@'.$controller;
          
-            switch ($method) {
+        switch($method)
+		 {
              case 'POST': self::post($route, $controller, $args); break;
              case 'PUT': self::put($route, $controller, $args); break;
              case 'DELETE': self::delete($route, $controller, $args); break;
              case 'ANY': self::any($route, $controller, $args); break;
              default: self::get($route, $controller, $args);
          }
-        }
+       }
     }
 	/*Pega os parametros da rota via path*/
 	public static function path($x){

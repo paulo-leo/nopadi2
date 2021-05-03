@@ -1,117 +1,40 @@
-  <!-- Footer -->
-  <footer class="np-container np-padding-16">
-    <h4>{{NP_NAME}}</h4>
-    <p>{{NP_DESCRIPTION}}</p>
-  </footer>
-
-  <!-- End page content -->
-</div>
-
-<!--Modal para abrir seleção de aplicativos-->
-
-<!-- The Modal -->
-<div id="np-id-modal-apps" class="np-modal">
-  <div class="np-modal-content np-animate-top np-round" style="max-width:900px">
-      <div class="np-col m12">
-	    <h5 class="np-display-topmiddle"><i class="material-icons">apps</i>Aplicativos</h5>
-	   <span onclick="document.getElementById('np-id-modal-apps').style.display='none'"
-      class="np-display-topright np-padding np-link"><i class="material-icons np-round np-hover-red np-border np-border-red">close</i></span>
-	   </div><br><br>
-  
-    <div class="np-container np-padding">
-	   <div class="np-row">
-	   
-	    <div class="np-quarter np-padding">
-           <div class="np-border np-round np-center" style="height:200px">
-		       <h5 class="np-border-bottom"><a href="{{url('fin')}}">
-			   <i class="material-icons np-border np-border-orange np-text-orange np-hover-yellow np-padding np-round np-margin-bottom">fact_check</i></a><br>Tarefas</h5>
-			   <p>Gerenciamento eficiente de atividades seguindo uma ordem cronológica.</p>
-		   </div>
-        </div> 
-		 
-	   
-		<div class="np-quarter np-padding">
-           <div class="np-border np-round np-center" style="height:200px">
-		       <h5 class="np-border-bottom"><a href="{{url('fin')}}">
-			   <i class="material-icons np-border np-border-green np-text-green np-hover-green np-padding np-round np-margin-bottom">graphic_eq</i></a><br>Financeiro</h5>
-			   <p>Gerenciamento financeiro simples e eficiente de todo o seu negócio. </p>
-		   </div>
+<!-------Footer------->
+                </div>
+                <div class="content-overlay"></div>
+            </div>
         </div>
-		
-		
-		 <div class="np-quarter np-padding">
-           <div class="np-border np-round np-center" style="height:200px">
-		       <h5 class="np-border-bottom"><a href="#">
-			   <i class="material-icons np-border np-border-pink np-text-pink np-hover-pink np-padding np-round np-margin-bottom">assignment_turned_in</i></a><br>Estoque</h5>
-			   <p>Gerenciamento eficiente de compras e vendas de seu estoque.</p>
-		   </div>
-        </div>
-		
-		
-		 <div class="np-quarter np-padding">
-           <div class="np-border np-round np-center" style="height:200px">
-		       <h5 class="np-border-bottom"><a href="#">
-			   <i class="material-icons np-border np-border-purple np-text-purple np-hover-purple np-padding np-round np-margin-bottom">point_of_sale</i></a><br>Ponto de Venda</h5>
-			   <p>Gerenciamento de PDV com operadores de venda em qualquer lugar. </p>
-		   </div>
-        </div>
-		
-		<div class="np-quarter np-padding">
-           <div class="np-border np-round np-center" style="height:200px">
-		       <h5 class="np-border-bottom"><a href="{{url('crm')}}">
-			   <i class="material-icons np-border np-border-indigo np-text-indigo np-hover-indigo np-padding np-round np-margin-bottom">business</i></a><br>CRM</h5>
-			   <p>Gestão de Relacionamento com os clientes.</p>
-		   </div>
-        </div>
-		
-		 <div class="np-quarter np-padding">
-           <div class="np-border np-round np-center" style="height:200px">
-		       <h5 class="np-border-bottom"><a href="#">
-			   <i class="material-icons np-border np-border-blue np-text-blue np-hover-blue np-padding np-round np-margin-bottom">article</i></a><br>Contratos</h5>
-			   <p>Gestão de contratos centralizada de todos os seus negócios.</p>
-		   </div>
-        </div>
-		
-		<div class="np-quarter np-padding">
-           <div class="np-border np-round np-center" style="height:200px">
-		       <h5 class="np-border-bottom"><a href="{{url('chart')}}">
-			   <i class="material-icons np-border np-border-red np-text-pink np-hover-pink np-padding np-round np-margin-bottom">pie_chart</i></a><br>Gráficos</h5>
-			   <p>Crie e visualize gráficos avançados para Power BI por meio do framework ChatJS.</p>
-		   </div>
-        </div>
-      </div> 
-	  
     </div>
-  </div>
-</div>
+    <!-- END: Page Main-->
 
+    <!-- BEGIN: Footer-->
 
+    <footer class="page-footer footer footer-static footer-dark indigo accent-2 navbar-border navbar-shadow">
+        <div class="footer-copyright">
+            <div class="container"><span>&copy; {{date('Y')}} <a href="#" target="_blank">{{NP_NAME}}</span></div>
+        </div>
+    </footer>
 
+    <!-- END: Footer-->
+    <!-- BEGIN VENDOR JS-->
+    <script src="{{asset()}}/app/js/vendors.min.js"></script>
+    <!-- BEGIN VENDOR JS-->
+    <!-- BEGIN PAGE VENDOR JS-->
+    <script src="{{asset()}}/app/vendors/chartjs/chart.min.js"></script>
+    <script src="{{asset()}}/app/vendors/chartist-js/chartist.min.js"></script>
+    <script src="{{asset()}}/app/vendors/chartist-js/chartist-plugin-tooltip.js"></script>
+    <script src="{{asset()}}/app/vendors/chartist-js/chartist-plugin-fill-donut.min.js"></script>
+    <!-- END PAGE VENDOR JS-->
+    <!-- BEGIN THEME  JS-->
+    <script src="{{asset()}}/app/js/plugins.js"></script>
+    <script src="{{asset()}}/app/js/search.js"></script>
+    <script src="{{asset()}}/app/js/custom/custom-script.js"></script>
+    <!-- END THEME  JS-->
+    <!-- BEGIN PAGE LEVEL JS-->
+    <script src="{{asset()}}/app/js/scripts/dashboard-modern.js"></script>
+    <script src="{{asset()}}/app/js/scripts/intro.js"></script>
 
-<script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
-
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function np_open() {
-  if (mySidebar.style.display === 'block') {
-    mySidebar.style.display = 'none';
-    overlayBg.style.display = "none";
-  } else {
-    mySidebar.style.display = 'block';
-    overlayBg.style.display = "block";
-  }
-}
-
-// Close the sidebar with the close button
-function np_close() {
-  mySidebar.style.display = "none";
-  overlayBg.style.display = "none";
-}
-</script>
-
+    <script src="{{asset()}}/app/js/select2.min.js"></script>
+    <!-- END PAGE LEVEL JS-->
 </body>
+
 </html>

@@ -96,4 +96,20 @@ class Param
         $value = $resource[$size - 1];
         return trim(htmlspecialchars($value, ENT_QUOTES));
     }
+	
+	public static function lastInt(){
+		$id = self::last();
+		return is_numeric($id) ? $id : false;
+	}
+	/*Retona a URL/Rota do recurso atual*/
+	public static function route()
+    {
+		$uri = new URI();
+		$base = $uri->base();
+		$url = explode('?',$uri->uri());
+		$url = $url[0];
+
+        $route = substr($url,strlen($base));
+        return trim(htmlspecialchars($route, ENT_QUOTES));
+    }
 }

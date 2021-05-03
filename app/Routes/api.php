@@ -1,6 +1,7 @@
 <?php
 
 use Nopadi\Http\Route;
+use Nopadi\FS\Json;
 
 /****************************************************************
  ******** Nopadi - Desenvolvimento web progressivo***************
@@ -35,3 +36,45 @@ Route::get('frame',function(){
 	echo '<iframe frameborder="0" src="'.url('my-frame').'"></iframe>';
 	
 });
+
+
+
+function _utf8_decode($string)
+{
+  $tmp = $string;
+  $count = 0;
+  while (mb_detect_encoding($tmp)=="UTF-8")
+  {
+    $tmp = utf8_decode($tmp);
+    $count++;
+  }
+ 
+  for ($i = 0; $i < $count-1 ; $i++)
+  {
+    $string = utf8_decode($string);
+   
+  }
+  return $string;
+ 
+}
+
+Route::get('json/{string}',function(){
+	
+	
+	
+	var_dump(Auth::sector());
+	
+	
+});
+
+
+
+
+
+
+
+
+
+
+
+
